@@ -332,6 +332,7 @@
             animation: streamFlow 8s linear forwards;
             font-weight: 300;
             border-left: 3px solid;
+            background: rgba(0,0,0,0.7);
         }
         
         @keyframes streamFlow {
@@ -341,10 +342,10 @@
             100% { transform: translateX(-100%); opacity: 0; }
         }
         
-        .event-arbitrage { background: rgba(124, 242, 124, 0.15); border-left-color: var(--grafana-green); }
-        .event-flashloan { background: rgba(87, 148, 242, 0.15); border-left-color: var(--grafana-blue); }
-        .event-trade { background: rgba(255, 152, 48, 0.15); border-left-color: var(--grafana-orange); }
-        .event-security { background: rgba(242, 73, 92, 0.15); border-left-color: var(--grafana-red); }
+        .event-arbitrage { border-left-color: var(--grafana-green); }
+        .event-flashloan { border-left-color: var(--grafana-blue); }
+        .event-trade { border-left-color: var(--grafana-orange); }
+        .event-security { border-left-color: var(--grafana-red); }
         
         /* FLASH LOAN METRICS */
         .provider-grid {
@@ -379,6 +380,33 @@
             background: var(--grafana-green);
             transition: width 0.3s ease;
         }
+
+        /* CHAIN & PAIRS PERFORMANCE */
+        .chain-pairs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .chain-item, .pair-item {
+            padding: 6px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8em;
+        }
+
+        .chain-name, .pair-name {
+            font-weight: 600;
+        }
+
+        .chain-profit, .pair-profit {
+            color: var(--grafana-green);
+            font-weight: 300;
+        }
     </style>
 </head>
 <body>
@@ -396,15 +424,15 @@
                         <div class="lifetime-label">Lifetime Profit</div>
                     </div>
                     <div class="lifetime-item">
-                        <div class="lifetime-value">47 days</div>
-                        <div class="lifetime-label">Operational Time</div>
+                        <div class="lifetime-value" id="operationalDays">47</div>
+                        <div class="lifetime-label">Operational Days</div>
                     </div>
                     <div class="lifetime-item">
-                        <div class="lifetime-value">1,247</div>
+                        <div class="lifetime-value" id="aiOptimizationRuns">1,247</div>
                         <div class="lifetime-label">AI Optimization Runs</div>
                     </div>
                     <div class="lifetime-item">
-                        <div class="lifetime-value profit-positive">+27.4%</div>
+                        <div class="lifetime-value profit-positive" id="totalPerformanceDelta">+27.4%</div>
                         <div class="lifetime-label">Total Performance Delta</div>
                     </div>
                 </div>
@@ -440,7 +468,7 @@
             <!-- Live Execution -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Ì¥Ñ Live Execution</div>
+                    <div class="card-title">ÔøΩÔøΩ Live Execution</div>
                 </div>
                 <div class="metric-grid-4col">
                     <div class="metric-item">
@@ -547,47 +575,47 @@
                 <div class="ai-metrics-grid">
                     <div class="ai-metric">
                         <div class="metric-label">Total Runs</div>
-                        <div class="metric-number">1,247</div>
+                        <div class="metric-number" id="aiTotalRuns">1,247</div>
                     </div>
                     <div class="ai-metric">
                         <div class="metric-label">Total Delta</div>
-                        <div class="metric-number profit-positive">+27.4%</div>
+                        <div class="metric-number profit-positive" id="aiTotalDelta">+27.4%</div>
                     </div>
                     <div class="ai-metric">
                         <div class="metric-label">Avg Interval</div>
-                        <div class="metric-number">12.3m</div>
+                        <div class="metric-number" id="aiAvgInterval">12.3m</div>
                     </div>
                     <div class="ai-metric">
                         <div class="metric-label">Avg Œî/Run</div>
-                        <div class="metric-number profit-positive">+0.022%</div>
+                        <div class="metric-number profit-positive" id="aiAvgDeltaRun">+0.022%</div>
                     </div>
                 </div>
 
                 <div class="strategy-grid">
                     <div class="strategy-item">
                         <div>Gas AI</div>
-                        <div class="profit-positive">+18.2%</div>
-                        <div style="font-size: 0.7em; color: #888;">342 runs</div>
+                        <div class="profit-positive" id="aiGasDelta">+18.2%</div>
+                        <div style="font-size: 0.7em; color: #888;" id="aiGasRuns">342 runs</div>
                     </div>
                     <div class="strategy-item">
                         <div>Routing</div>
-                        <div class="profit-positive">+23.1%</div>
-                        <div style="font-size: 0.7em; color: #888;">285 runs</div>
+                        <div class="profit-positive" id="aiRoutingDelta">+23.1%</div>
+                        <div style="font-size: 0.7em; color: #888;" id="aiRoutingRuns">285 runs</div>
                     </div>
                     <div class="strategy-item">
                         <div>Risk AI</div>
-                        <div class="profit-positive">+14.3%</div>
-                        <div style="font-size: 0.7em; color: #888;">218 runs</div>
+                        <div class="profit-positive" id="aiRiskDelta">+14.3%</div>
+                        <div style="font-size: 0.7em; color: #888;" id="aiRiskRuns">218 runs</div>
                     </div>
                     <div class="strategy-item">
                         <div>Liquidity</div>
-                        <div class="profit-positive">+12.8%</div>
-                        <div style="font-size: 0.7em; color: #888;">192 runs</div>
+                        <div class="profit-positive" id="aiLiquidityDelta">+12.8%</div>
+                        <div style="font-size: 0.7em; color: #888;" id="aiLiquidityRuns">192 runs</div>
                     </div>
                     <div class="strategy-item">
                         <div>Timing</div>
-                        <div class="profit-positive">+9.7%</div>
-                        <div style="font-size: 0.7em; color: #888;">210 runs</div>
+                        <div class="profit-positive" id="aiTimingDelta">+9.7%</div>
+                        <div style="font-size: 0.7em; color: #888;" id="aiTimingRuns">210 runs</div>
                     </div>
                 </div>
 
@@ -642,7 +670,7 @@
             </div>
         </div>
 
-        <!-- ROW 3: STRATEGY & WALLET -->
+        <!-- ROW 3: STRATEGY, CHAINS & PAIRS -->
         <div class="metrics-grid">
             <!-- Strategy Performance -->
             <div class="card">
@@ -673,6 +701,59 @@
                 </div>
             </div>
 
+            <!-- Profit by Chains & Pairs -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Ìºê Profit by Chains & Pairs</div>
+                </div>
+                
+                <!-- Chains Performance -->
+                <div style="margin-bottom: 12px;">
+                    <div style="font-size: 0.9em; color: var(--grafana-blue); margin-bottom: 8px; font-weight: 600;">Blockchain Performance</div>
+                    <div class="chain-pairs-grid">
+                        <div class="chain-item">
+                            <span class="chain-name">Ethereum</span>
+                            <span class="chain-profit" id="chainEthProfit">$64.2K</span>
+                        </div>
+                        <div class="chain-item">
+                            <span class="chain-name">BSC</span>
+                            <span class="chain-profit" id="chainBscProfit">$31.8K</span>
+                        </div>
+                        <div class="chain-item">
+                            <span class="chain-name">Polygon</span>
+                            <span class="chain-profit" id="chainPolygonProfit">$18.5K</span>
+                        </div>
+                        <div class="chain-item">
+                            <span class="chain-name">Arbitrum</span>
+                            <span class="chain-profit" id="chainArbitrumProfit">$6.5K</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trading Pairs Performance -->
+                <div>
+                    <div style="font-size: 0.9em; color: var(--grafana-blue); margin-bottom: 8px; font-weight: 600;">Trading Pairs Performance</div>
+                    <div class="chain-pairs-grid">
+                        <div class="pair-item">
+                            <span class="pair-name">ETH/USDT</span>
+                            <span class="pair-profit" id="pairEthUsdtProfit">$24.8K</span>
+                        </div>
+                        <div class="pair-item">
+                            <span class="pair-name">BTC/USDT</span>
+                            <span class="pair-profit" id="pairBtcUsdtProfit">$18.3K</span>
+                        </div>
+                        <div class="pair-item">
+                            <span class="pair-name">USDC/USDT</span>
+                            <span class="pair-profit" id="pairUsdcUsdtProfit">$12.1K</span>
+                        </div>
+                        <div class="pair-item">
+                            <span class="pair-name">MATIC/USDT</span>
+                            <span class="pair-profit" id="pairMaticUsdtProfit">$4.2K</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Smart Wallet -->
             <div class="card">
                 <div class="card-header">
@@ -686,12 +767,12 @@
                     </div>
                     <div class="metric-item">
                         <div class="metric-label">Staked</div>
-                        <div class="metric-number">$142.2K</div>
+                        <div class="metric-number" id="stakedBalance">$142.2K</div>
                         <div style="font-size: 0.7em; color: #888;">24H ‚Ä¢ 3.8%</div>
                     </div>
                     <div class="metric-item">
                         <div class="metric-label">LP Positions</div>
-                        <div class="metric-number">$56.7K</div>
+                        <div class="metric-number" id="lpBalance">$56.7K</div>
                         <div style="font-size: 0.7em; color: #888;">2H ‚Ä¢ 12.4%</div>
                     </div>
                 </div>
@@ -704,27 +785,70 @@
         let reinvestmentRate = 65;
         let refreshInterval = 5000;
         
-        // Live data state
+        // COMPLETE LIVE DATA STATE - ALL METRICS
         let liveData = {
+            // Header Metrics
+            lifetimeProfit: 124582,
+            operationalDays: 47,
+            aiOptimizationRuns: 1247,
+            totalPerformanceDelta: 27.4,
+            
+            // Live Execution
             activeTrades: 12,
             tradesHourly: 47.3,
             successRate: 94.2,
             executionLatency: 1.2,
+            
+            // Flash Loan Analytics
             flashAvailable: 4200000,
             flashUtilized: 68,
             activeLoans: 8,
             flashROI: 2.4,
+            
+            // Blockchain Streaming
             eventsPerSecond: 384,
             arbitrageEvents: 42,
             flashLoanEvents: 18,
             tradeEvents: 247,
+            
+            // Strategy Performance
             triangularProfit: 42800,
             crossDEXProfit: 31200,
             flashArbProfit: 28900,
             mevProfit: 12400,
+            
+            // AI Optimization
+            aiTotalRuns: 1247,
+            aiTotalDelta: 27.4,
+            aiAvgInterval: 12.3,
+            aiAvgDeltaRun: 0.022,
+            aiGasDelta: 18.2,
+            aiGasRuns: 342,
+            aiRoutingDelta: 23.1,
+            aiRoutingRuns: 285,
+            aiRiskDelta: 14.3,
+            aiRiskRuns: 218,
+            aiLiquidityDelta: 12.8,
+            aiLiquidityRuns: 192,
+            aiTimingDelta: 9.7,
+            aiTimingRuns: 210,
+            
+            // Chain Performance
+            chainEthProfit: 64200,
+            chainBscProfit: 31800,
+            chainPolygonProfit: 18500,
+            chainArbitrumProfit: 6500,
+            
+            // Pair Performance
+            pairEthUsdtProfit: 24800,
+            pairBtcUsdtProfit: 18300,
+            pairUsdcUsdtProfit: 12100,
+            pairMaticUsdtProfit: 4200,
+            
+            // Smart Wallet
             availableBalance: 89400,
-            lifetimeProfit: 124582,
-            profitPerHour: 1247
+            stakedBalance: 142200,
+            lpBalance: 56700
         };
         
         function toggleCurrency() {
@@ -736,22 +860,23 @@
         
         function updateCurrencyDisplay() {
             const ethToUsdRate = 1870;
+            const elementsToConvert = [
+                'lifetimeProfit', 'triangularProfit', 'crossDEXProfit', 'flashArbProfit', 'mevProfit',
+                'availableBalance', 'chainEthProfit', 'chainBscProfit', 'chainPolygonProfit', 'chainArbitrumProfit',
+                'pairEthUsdtProfit', 'pairBtcUsdtProfit', 'pairUsdcUsdtProfit', 'pairMaticUsdtProfit'
+            ];
             
-            if (currencyMode === 'ETH') {
-                document.getElementById('triangularProfit').textContent = (liveData.triangularProfit / ethToUsdRate).toFixed(1) + ' ETH';
-                document.getElementById('crossDEXProfit').textContent = (liveData.crossDEXProfit / ethToUsdRate).toFixed(1) + ' ETH';
-                document.getElementById('flashArbProfit').textContent = (liveData.flashArbProfit / ethToUsdRate).toFixed(1) + ' ETH';
-                document.getElementById('mevProfit').textContent = (liveData.mevProfit / ethToUsdRate).toFixed(1) + ' ETH';
-                document.getElementById('availableBalance').textContent = (liveData.availableBalance / ethToUsdRate).toFixed(1) + ' ETH';
-                document.getElementById('lifetimeProfit').textContent = (liveData.lifetimeProfit / ethToUsdRate).toFixed(1) + ' ETH';
-            } else {
-                document.getElementById('triangularProfit').textContent = '$' + liveData.triangularProfit.toLocaleString();
-                document.getElementById('crossDEXProfit').textContent = '$' + liveData.crossDEXProfit.toLocaleString();
-                document.getElementById('flashArbProfit').textContent = '$' + liveData.flashArbProfit.toLocaleString();
-                document.getElementById('mevProfit').textContent = '$' + liveData.mevProfit.toLocaleString();
-                document.getElementById('availableBalance').textContent = '$' + liveData.availableBalance.toLocaleString();
-                document.getElementById('lifetimeProfit').textContent = '$' + liveData.lifetimeProfit.toLocaleString();
-            }
+            elementsToConvert.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    if (currencyMode === 'ETH') {
+                        const ethValue = (liveData[elementId] / ethToUsdRate).toFixed(1);
+                        element.textContent = ethValue + ' ETH';
+                    } else {
+                        element.textContent = '$' + liveData[elementId].toLocaleString();
+                    }
+                }
+            });
         }
         
         function updateReinvestment(value) {
@@ -760,8 +885,6 @@
             
             const reinvestmentAmount = (liveData.lifetimeProfit * reinvestmentRate / 100);
             document.getElementById('reinvestmentAmount').textContent = '$' + reinvestmentAmount.toLocaleString('en-US', {maximumFractionDigits: 0});
-            
-            console.log('AI Optimization: Profit reinvestment rate set to', value + '%');
         }
         
         function updateRefreshRate(rate) {
@@ -770,19 +893,16 @@
             clearInterval(window.streamTimer);
             startDataRefresh();
             startStreaming();
-            console.log('Refresh rate updated to:', refreshInterval + 'ms');
         }
         
-        // Blockchain Streaming
+        // BLOCKCHAIN STREAMING - FIXED
         const eventTypes = [
             { type: 'arbitrage', text: 'Ì∫Ä Triangular Arb: ETH/USDT +0.42%', class: 'event-arbitrage' },
             { type: 'flashloan', text: '‚ö° Flash Loan: $250K @ 2.1% ROI', class: 'event-flashloan' },
             { type: 'trade', text: 'Ì≤∏ Cross-DEX: UNI/ETH +0.18% spread', class: 'event-trade' },
             { type: 'security', text: 'Ìª°Ô∏è MEV Defence: Front-run blocked', class: 'event-security' },
             { type: 'arbitrage', text: 'ÌæØ Statistical Arb: BTC/ETH +0.31%', class: 'event-arbitrage' },
-            { type: 'flashloan', text: '‚ö° Aave Loan: $180K executed', class: 'event-flashloan' },
-            { type: 'trade', text: 'Ì≤´ Gasless Trade: MATIC/USDC via Pilmico', class: 'event-trade' },
-            { type: 'arbitrage', text: 'Ì≥à Cross-chain Arb: ETH‚ÜíBSC +0.57%', class: 'event-arbitrage' }
+            { type: 'flashloan', text: '‚ö° Aave Loan: $180K executed', class: 'event-flashloan' }
         ];
         
         function createStreamEvent() {
@@ -793,7 +913,7 @@
             eventElement.className = `stream-event ${event.class}`;
             eventElement.textContent = event.text;
             eventElement.style.top = Math.random() * 80 + 'px';
-            eventElement.style.animationDuration = (6 + Math.random() * 6) + 's';
+            eventElement.style.animationDuration = (6 + Math.random() * 4) + 's';
             
             streamContainer.appendChild(eventElement);
             
@@ -813,41 +933,103 @@
                 if (eventElement.parentNode) {
                     eventElement.parentNode.removeChild(eventElement);
                 }
-            }, 12000);
+            }, 10000);
         }
         
         function startStreaming() {
-            const streamRate = Math.max(300, refreshInterval / 2);
+            const streamRate = Math.max(400, refreshInterval);
             window.streamTimer = setInterval(createStreamEvent, streamRate);
         }
         
+        // COMPLETE DATA REFRESH - ALL METRICS
         function simulateLiveData() {
-            // Update all live metrics with realistic variations
-            const metrics = [
-                { id: 'activeTrades', value: () => Math.max(1, liveData.activeTrades + Math.floor(Math.random() * 3) - 1) },
-                { id: 'tradesHourly', value: () => Math.max(10, liveData.tradesHourly + (Math.random() - 0.5) * 2) },
-                { id: 'successRate', value: () => Math.max(85, Math.min(99, liveData.successRate + (Math.random() - 0.5) * 0.5)) },
-                { id: 'executionLatency', value: () => Math.max(0.8, Math.min(2.5, liveData.executionLatency + (Math.random() - 0.5) * 0.1)) },
-                { id: 'flashUtilized', value: () => Math.max(50, Math.min(85, liveData.flashUtilized + (Math.random() - 0.5) * 2)) },
-                { id: 'activeLoans', value: () => Math.max(1, liveData.activeLoans + Math.floor(Math.random() * 2) - 1) },
-                { id: 'flashROI', value: () => Math.max(1.5, Math.min(4.0, liveData.flashROI + (Math.random() - 0.5) * 0.2)) },
-                { id: 'eventsPerSecond', value: () => Math.max(200, Math.min(500, liveData.eventsPerSecond + (Math.random() - 0.5) * 20)) }
-            ];
-            
-            metrics.forEach(metric => {
-                const newValue = metric.value();
-                liveData[metric.id] = newValue;
+            // Update ALL metrics with realistic variations
+            const metricsToUpdate = {
+                // Header Metrics
+                'lifetimeProfit': { min: 120000, max: 130000, variation: 50 },
+                'aiOptimizationRuns': { min: 1200, max: 1300, variation: 2 },
+                'totalPerformanceDelta': { min: 26.5, max: 28.5, variation: 0.1 },
                 
-                const element = document.getElementById(metric.id);
+                // Live Execution
+                'activeTrades': { min: 8, max: 16, variation: 1 },
+                'tradesHourly': { min: 45, max: 52, variation: 0.5 },
+                'successRate': { min: 93, max: 96, variation: 0.2 },
+                'executionLatency': { min: 1.0, max: 1.5, variation: 0.05 },
+                
+                // Flash Loan Analytics
+                'flashUtilized': { min: 65, max: 75, variation: 1 },
+                'activeLoans': { min: 6, max: 10, variation: 1 },
+                'flashROI': { min: 2.2, max: 2.8, variation: 0.1 },
+                
+                // Blockchain Streaming
+                'eventsPerSecond': { min: 350, max: 420, variation: 10 },
+                
+                // Strategy Performance
+                'triangularProfit': { min: 42000, max: 44000, variation: 100 },
+                'crossDEXProfit': { min: 30800, max: 31800, variation: 80 },
+                'flashArbProfit': { min: 28500, max: 29500, variation: 70 },
+                'mevProfit': { min: 12000, max: 12800, variation: 50 },
+                
+                // AI Optimization
+                'aiTotalDelta': { min: 27.0, max: 28.0, variation: 0.05 },
+                'aiAvgDeltaRun': { min: 0.020, max: 0.024, variation: 0.001 },
+                'aiGasDelta': { min: 17.8, max: 18.6, variation: 0.1 },
+                'aiRoutingDelta': { min: 22.8, max: 23.4, variation: 0.1 },
+                'aiRiskDelta': { min: 14.0, max: 14.6, variation: 0.1 },
+                'aiLiquidityDelta': { min: 12.5, max: 13.1, variation: 0.1 },
+                'aiTimingDelta': { min: 9.4, max: 10.0, variation: 0.1 },
+                
+                // Chain Performance
+                'chainEthProfit': { min: 63800, max: 64800, variation: 100 },
+                'chainBscProfit': { min: 31500, max: 32200, variation: 80 },
+                'chainPolygonProfit': { min: 18300, max: 18800, variation: 60 },
+                'chainArbitrumProfit': { min: 6400, max: 6700, variation: 30 },
+                
+                // Pair Performance
+                'pairEthUsdtProfit': { min: 24600, max: 25200, variation: 80 },
+                'pairBtcUsdtProfit': { min: 18100, max: 18600, variation: 60 },
+                'pairUsdcUsdtProfit': { min: 11900, max: 12400, variation: 40 },
+                'pairMaticUsdtProfit': { min: 4150, max: 4280, variation: 20 },
+                
+                // Smart Wallet
+                'availableBalance': { min: 88500, max: 90500, variation: 100 },
+                'stakedBalance': { min: 141500, max: 143000, variation: 150 },
+                'lpBalance': { min: 56500, max: 57000, variation: 50 }
+            };
+            
+            Object.keys(metricsToUpdate).forEach(metricKey => {
+                const config = metricsToUpdate[metricKey];
+                const currentValue = liveData[metricKey];
+                const randomChange = (Math.random() - 0.5) * config.variation;
+                let newValue = currentValue + randomChange;
+                
+                // Apply bounds
+                newValue = Math.max(config.min, Math.min(config.max, newValue));
+                liveData[metricKey] = newValue;
+                
+                // Update DOM element
+                const element = document.getElementById(metricKey);
                 if (element) {
-                    if (metric.id.includes('Rate') || metric.id.includes('ROI') || metric.id.includes('Utilized')) {
-                        element.textContent = newValue.toFixed(1) + '%';
-                    } else if (metric.id === 'executionLatency') {
+                    if (metricKey.includes('Profit') || metricKey.includes('Balance')) {
+                        if (currencyMode === 'USD') {
+                            element.textContent = '$' + Math.round(newValue).toLocaleString();
+                        }
+                    } else if (metricKey.includes('Rate') || metricKey.includes('ROI') || metricKey.includes('Delta') || metricKey.includes('Utilized')) {
+                        if (metricKey === 'aiAvgDeltaRun') {
+                            element.textContent = '+' + newValue.toFixed(3) + '%';
+                        } else {
+                            element.textContent = (metricKey.includes('Delta') ? '+' : '') + newValue.toFixed(1) + '%';
+                        }
+                    } else if (metricKey === 'executionLatency') {
                         element.textContent = newValue.toFixed(1) + 's';
-                    } else if (metric.id === 'tradesHourly') {
+                    } else if (metricKey === 'tradesHourly') {
                         element.textContent = newValue.toFixed(1);
-                    } else if (metric.id === 'eventsPerSecond') {
+                    } else if (metricKey === 'eventsPerSecond') {
                         element.textContent = Math.round(newValue);
+                    } else if (metricKey === 'aiOptimizationRuns') {
+                        element.textContent = Math.round(newValue).toLocaleString();
+                    } else if (metricKey === 'aiAvgInterval') {
+                        element.textContent = newValue.toFixed(1) + 'm';
                     } else {
                         element.textContent = Math.round(newValue);
                     }
@@ -857,13 +1039,21 @@
             // Update header metrics
             document.getElementById('successRate').textContent = liveData.successRate.toFixed(1) + '%';
             document.getElementById('tradesPerHour').textContent = liveData.tradesHourly.toFixed(1) + '/h';
+            document.getElementById('operationalDays').textContent = liveData.operationalDays;
+            
+            // Update AI run counts
+            document.getElementById('aiGasRuns').textContent = liveData.aiGasRuns + ' runs';
+            document.getElementById('aiRoutingRuns').textContent = liveData.aiRoutingRuns + ' runs';
+            document.getElementById('aiRiskRuns').textContent = liveData.aiRiskRuns + ' runs';
+            document.getElementById('aiLiquidityRuns').textContent = liveData.aiLiquidityRuns + ' runs';
+            document.getElementById('aiTimingRuns').textContent = liveData.aiTimingRuns + ' runs';
         }
         
         function startDataRefresh() {
             window.refreshTimer = setInterval(simulateLiveData, refreshInterval);
         }
         
-        // Initialize
+        // Initialize everything
         updateCurrencyDisplay();
         updateReinvestment(65);
         startDataRefresh();
