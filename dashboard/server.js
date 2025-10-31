@@ -1,14 +1,10 @@
 const express = require('express');
 const path = require('path');
-const Web3 = require('web3');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
-
-// Initialize Web3
-const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/your-infura-key'));
 
 // Main Engine
 app.get('/', (req, res) => {
@@ -54,21 +50,8 @@ app.get('/health', (req, res) => {
         architecture: "BACKEND-ONLY",
         profit_capacity: "$100,000,000",
         financial_dashboard: "ENTERPRISE_GRADE",
-        features: ["MetaMask Integration", "Auto/Manual Transfers", "Financial Confirmations", "Threshold Management"],
         deployment: "READY_FOR_PRODUCTION",
         timestamp: new Date().toISOString()
-    });
-});
-
-// API status
-app.get('/api', (req, res) => {
-    res.json({
-        name: "Quantum Arbitrage Engine",
-        version: "Enterprise 2.5.0", 
-        security_model: "Zero-Trust Architecture",
-        financial_features: ["MetaMask Integration", "Auto Transfer Modes", "Financial Confirmations", "Threshold Management"],
-        compliance: "Institutional Grade",
-        scalability: "$1B+ Capacity"
     });
 });
 
@@ -88,7 +71,6 @@ app.get('/monitor', (req, res) => {
                 body { font-family: Arial, sans-serif; background: #1e1e1e; color: white; padding: 20px; }
                 .metric { background: #2d2d2d; padding: 20px; margin: 10px; border-radius: 8px; }
                 .profit { color: #73bf69; font-size: 24px; font-weight: bold; }
-                .financial { color: #f6851b; }
             </style>
         </head>
         <body>
@@ -98,8 +80,7 @@ app.get('/monitor', (req, res) => {
                 <div>Total Profit: $116,137</div>
                 <div>Active Bots: 12/12</div>
                 <div>Success Rate: 98.7%</div>
-                <div class="financial">Financial Dashboard: Enterprise Grade Active</div>
-                <div>Auto Transfer Mode: READY</div>
+                <div>Financial Dashboard: Enterprise Grade Active</div>
             </div>
             <p><a href="/withdrawal" style="color: yellow;">‚Üí Go to Profit Withdrawal</a></p>
             <p><a href="/">‚Üê Back to Main Engine</a></p>
@@ -108,23 +89,6 @@ app.get('/monitor', (req, res) => {
     `);
 });
 
-// Blockchain API endpoints
-app.get('/api/blockchain/balance/:address', async (req, res) => {
-    try {
-        const balance = await web3.eth.getBalance(req.params.address);
-        const balanceETH = web3.utils.fromWei(balance, 'ether');
-        res.json({ address: req.params.address, balance: balanceETH, unit: 'ETH' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
 app.listen(PORT, () => {
-    console.log("Ì∫Ä AINEXUS Enterprise Financial Dashboard running on port", PORT);
-    console.log("Ì≥ç Main Engine: http://localhost:" + PORT + "/");
-    console.log("Ì≤∞ Profit Withdrawal: http://localhost:" + PORT + "/withdrawal");
-    console.log("Ì≥ä Live Monitor: http://localhost:" + PORT + "/monitor");
-    console.log("Ì¥ó MetaMask Integration: ENTERPRISE GRADE");
-    console.log("Ì¥ñ Auto Transfer System: ACTIVE");
-    console.log("‚è±Ô∏è  Time-Bound Execution: ENABLED");
+    console.log("ÔøΩÔøΩ AINEXUS Enterprise Server running on port", PORT);
 });
