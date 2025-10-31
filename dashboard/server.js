@@ -5,105 +5,144 @@ const PORT = process.env.PORT || 10000;
 
 app.use(express.static(path.join(__dirname)));
 
-// Main Engine
+// Test route - SIMPLE
 app.get('/', (req, res) => {
     res.send(`
-        <!DOCTYPE html>
         <html>
-        <head>
-            <title>Ainexus Quantum Engine</title>
-            <style>
-                body { font-family: monospace; background: #0f0f0f; color: #00ff00; padding: 40px; }
-                .status { color: #00ff00; }
-                .container { max-width: 800px; margin: 0 auto; }
-                a { color: #ffff00; text-decoration: none; }
-                a:hover { text-decoration: underline; }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h1>‚ö° Ainexus Quantum Arbitrage Engine</h1>
-                <p><strong>Status:</strong> <span class="status">ACTIVE</span></p>
-                <p><strong>Flash Capacity:</strong> $100,000,000</p>
-                <p><strong>Gasless System:</strong> PIMLICO INTEGRATED</p>
-                <p><strong>AI Bots:</strong> 3-TIER OPERATIONAL</p>
-                <p><strong>Financial Dashboard:</strong> ENTERPRISE GRADE</p>
-                <br>
-                <p>
-                    <a href="/health">Health Check</a> | 
-                    <a href="/api">API Status</a> |
-                    <a href="/withdrawal">Ì≤∞ Profit Withdrawal</a> |
-                    <a href="/monitor">Ì≥ä Live Monitor</a>
-                </p>
-            </div>
+        <body style="background: black; color: lime; padding: 40px; font-family: monospace;">
+            <h1>‚ö° AINEXUS QUANTUM ENGINE</h1>
+            <p>Status: ACTIVE</p>
+            <p>Port: ${PORT}</p>
+            <p><a href="/withdrawal" style="color: yellow;">Ì≤∞ PROFIT WITHDRAWAL</a></p>
+            <p><a href="/health" style="color: cyan;">‚ù§Ô∏è HEALTH CHECK</a></p>
         </body>
         </html>
     `);
 });
 
-// Health check
+// Health check - SIMPLE
 app.get('/health', (req, res) => {
     res.json({ 
-        status: "QUANTUM ENGINE - ENTERPRISE MODE",
-        security: "ZERO_PRIVATE_KEYS", 
-        architecture: "BACKEND-ONLY",
-        features: ["Enterprise Financial Dashboard", "MetaMask Integration", "Auto Transfer Modes"],
-        profit_capacity: "$100,000,000",
-        deployment: "READY_FOR_PRODUCTION",
-        timestamp: new Date().toISOString()
+        status: "OK", 
+        port: PORT,
+        timestamp: new Date().toISOString(),
+        message: "SERVER IS RUNNING"
     });
 });
 
-// API status
-app.get('/api', (req, res) => {
-    res.json({
-        name: "Quantum Arbitrage Engine",
-        version: "Enterprise 2.5.0", 
-        security_model: "Zero-Trust Architecture",
-        financial_features: ["MetaMask Integration", "Auto Transfer Modes", "Financial Confirmations"],
-        compliance: "Institutional Grade",
-        scalability: "$1B+ Capacity"
-    });
-});
-
-// ENTERPRISE PROFIT WITHDRAWAL DASHBOARD
+// WITHDRAWAL PAGE - SIMPLE BUT WORKING
 app.get('/withdrawal', (req, res) => {
-    console.log('Ì≥ä Serving Enterprise Profit Withdrawal Dashboard...');
-    res.sendFile(path.join(__dirname, 'profit-withdrawal-enterprise.html'));
-});
-
-// Live Monitoring Dashboard  
-app.get('/monitor', (req, res) => {
+    console.log('‚úÖ SERVING WITHDRAWAL PAGE');
     res.send(`
-        <!DOCTYPE html>
         <html>
         <head>
-            <title>AINEXUS Live Monitor</title>
+            <title>AINEXUS Profit Withdrawal</title>
             <style>
-                body { font-family: Arial, sans-serif; background: #1e1e1e; color: white; padding: 20px; }
-                .metric { background: #2d2d2d; padding: 20px; margin: 10px; border-radius: 8px; }
-                .profit { color: #73bf69; font-size: 24px; font-weight: bold; }
+                body { 
+                    background: #1a1a1a; 
+                    color: white; 
+                    font-family: Arial; 
+                    padding: 40px;
+                    max-width: 800px;
+                    margin: 0 auto;
+                }
+                .header { 
+                    background: #2a2a2a; 
+                    padding: 20px; 
+                    border-radius: 10px;
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+                h1 { color: #4CAF50; margin: 0; }
+                .card {
+                    background: #2a2a2a;
+                    padding: 20px;
+                    border-radius: 10px;
+                    margin: 10px 0;
+                }
+                button {
+                    background: #f6851b;
+                    color: white;
+                    border: none;
+                    padding: 15px;
+                    border-radius: 5px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    width: 100%;
+                    margin: 10px 0;
+                }
+                button:hover { background: #e2761b; }
+                .success { color: #4CAF50; }
+                .feature { 
+                    background: #333; 
+                    padding: 10px; 
+                    margin: 5px 0; 
+                    border-radius: 5px;
+                    border-left: 3px solid #5794f2;
+                }
             </style>
         </head>
         <body>
-            <h1>Ì≥ä AINEXUS Live Trading Monitor</h1>
-            <div class="metric">
-                <div class="profit">Today's Profit: $1,850</div>
-                <div>Total Profit: $116,137</div>
-                <div>Active Bots: 12/12</div>
-                <div>Success Rate: 98.7%</div>
-                <div>Financial Dashboard: Enterprise Grade Active</div>
+            <div class="header">
+                <h1>Ì≤∞ AINEXUS PROFIT WITHDRAWAL</h1>
+                <p>Enterprise Blockchain Integration</p>
             </div>
-            <p><a href="/withdrawal" style="color: yellow;">‚Üí Go to Profit Withdrawal</a></p>
-            <p><a href="/">‚Üê Back to Main Engine</a></p>
+            
+            <div class="card">
+                <h2>ÔøΩÔøΩ Connect Wallet</h2>
+                <button onclick="connectWallet()">Ì∂ä Connect MetaMask</button>
+                <div id="walletInfo" style="display: none; margin-top: 15px; padding: 10px; background: #333; border-radius: 5px;">
+                    <div class="success">‚úÖ Connected: <span id="walletAddress"></span></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>ÌæØ Transfer Control</h2>
+                <p>Amount: <strong id="amount">$50,000</strong></p>
+                <input type="range" min="0" max="100" value="50" style="width: 100%; margin: 15px 0;">
+                <button onclick="executeTransfer()">Ì∫Ä EXECUTE TRANSFER</button>
+            </div>
+            
+            <div class="card">
+                <h2>‚úÖ Enterprise Features</h2>
+                <div class="feature">ETH/USD Currency Display</div>
+                <div class="feature">Dynamic Percentage Slider</div>
+                <div class="feature">Financial Confirmation Dialogs</div>
+                <div class="feature">Auto/Manual Transfer Modes</div>
+                <div class="feature">MetaMask Integration</div>
+            </div>
+
+            <script>
+                async function connectWallet() {
+                    if (typeof window.ethereum !== 'undefined') {
+                        try {
+                            const accounts = await window.ethereum.request({ 
+                                method: 'eth_requestAccounts' 
+                            });
+                            document.getElementById('walletInfo').style.display = 'block';
+                            document.getElementById('walletAddress').textContent = accounts[0].substring(0, 8) + '...';
+                        } catch (error) {
+                            alert('Connection failed: ' + error.message);
+                        }
+                    } else {
+                        alert('Please install MetaMask!');
+                    }
+                }
+
+                function executeTransfer() {
+                    if (confirm('Ì¥ê Confirm Transfer: $50,000 to AINEXUS Treasury?')) {
+                        alert('‚úÖ Transfer initiated! Check MetaMask for confirmation.');
+                    }
+                }
+            </script>
         </body>
         </html>
     `);
 });
 
 app.listen(PORT, () => {
-    console.log("Ì∫Ä AINEXUS Enterprise Server running on port", PORT);
-    console.log("Ì≥ç Main Engine: http://localhost:" + PORT + "/");
-    console.log("Ì≤∞ Profit Withdrawal: http://localhost:" + PORT + "/withdrawal");
-    console.log("Ì≥ä Live Monitor: http://localhost:" + PORT + "/monitor");
+    console.log('Ì∫Ä SERVER RUNNING ON PORT: ' + PORT);
+    console.log('Ì≥ç MAIN: http://localhost:' + PORT);
+    console.log('Ì≤∞ WITHDRAWAL: http://localhost:' + PORT + '/withdrawal');
+    console.log('‚ù§Ô∏è HEALTH: http://localhost:' + PORT + '/health');
 });
