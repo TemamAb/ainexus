@@ -1,27 +1,16 @@
 version: '3.8'
 
 services:
-  quantum-engine:
+  ainexus-unified:
     build: .
     ports:
       - "10000:10000"
     environment:
       - NODE_ENV=production
+      - PORT=10000
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:10000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-
-  trading-dashboard:
-    build: .
-    ports:
-      - "3000:3000"
-    command: npm run dashboard
-    environment:
-      - NODE_ENV=production
-      - DASHBOARD_PORT=3000
-    depends_on:
-      - quantum-engine
-    restart: unless-stopped
