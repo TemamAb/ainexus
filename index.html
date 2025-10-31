@@ -10,7 +10,7 @@
             --grafana-panel: #2d2d2d;
             --grafana-border: #404040;
             --grafana-text: #d8d9da;
-            --grafana-green: #4ade80; /* 50% brighter green */
+            --grafana-green: #7cf27c;
             --grafana-blue: #5794f2;
             --grafana-orange: #ff9830;
             --grafana-red: #f2495c;
@@ -37,20 +37,13 @@
             margin: 0 auto;
         }
         
-        /* LEFT-ALIGNED HEADER */
+        /* HEADER */
         .enterprise-header {
             background: var(--grafana-panel);
             border: 1px solid var(--grafana-border);
             border-radius: 6px;
             padding: 20px;
             margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-        
-        .header-left {
-            flex: 1;
         }
         
         .main-title {
@@ -68,14 +61,10 @@
             letter-spacing: 0.5px;
         }
         
-        .gasless-badge {
-            display: inline-block;
-            background: var(--grafana-green);
-            color: #000;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75em;
-            font-weight: 600;
+        .gasless-indicator {
+            font-size: 0.8em;
+            color: var(--grafana-green);
+            font-weight: 300;
             margin-top: 5px;
         }
         
@@ -95,7 +84,7 @@
         
         .lifetime-value {
             font-size: 1.3em;
-            font-weight: 600;
+            font-weight: 300;
             color: var(--grafana-green);
         }
         
@@ -103,6 +92,7 @@
             font-size: 0.75em;
             color: #888;
             margin-top: 2px;
+            font-weight: 300;
         }
         
         /* CONTROLS */
@@ -151,12 +141,6 @@
             margin-bottom: 12px;
         }
         
-        .compact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 10px;
-        }
-        
         .card {
             background: var(--grafana-panel);
             border: 1px solid var(--grafana-border);
@@ -181,8 +165,9 @@
         
         .metric-value {
             font-size: 1.6em;
-            font-weight: 700;
+            font-weight: 300; /* Light and thin */
             margin: 5px 0;
+            color: var(--grafana-green);
         }
         
         .metric-grid-2col {
@@ -217,16 +202,17 @@
             font-size: 0.75em;
             color: #888;
             margin-bottom: 3px;
+            font-weight: 300;
         }
         
         .metric-number {
             font-size: 1.1em;
-            font-weight: 600;
+            font-weight: 300; /* Light and thin */
+            color: var(--grafana-green);
         }
         
         .profit-positive { color: var(--grafana-green); }
         .profit-negative { color: var(--grafana-red); }
-        .profit-neutral { color: var(--grafana-orange); }
         
         /* AI OPTIMIZATION */
         .ai-metrics-grid {
@@ -259,6 +245,73 @@
             font-size: 0.8em;
         }
         
+        /* REINVESTMENT SLIDER */
+        .reinvestment-control {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 6px;
+            border: 1px solid var(--grafana-border);
+        }
+        
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .slider-label {
+            font-size: 0.9em;
+            color: var(--grafana-text);
+            font-weight: 600;
+        }
+        
+        .slider-value {
+            font-size: 1.1em;
+            color: var(--grafana-green);
+            font-weight: 300;
+        }
+        
+        .slider-container {
+            width: 100%;
+        }
+        
+        .reinvestment-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--grafana-border);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .reinvestment-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--grafana-green);
+            cursor: pointer;
+        }
+        
+        .reinvestment-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--grafana-green);
+            cursor: pointer;
+            border: none;
+        }
+        
+        .slider-ticks {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.7em;
+            color: #888;
+        }
+        
         /* BLOCKCHAIN STREAMING */
         .streaming-container {
             height: 120px;
@@ -275,7 +328,8 @@
             border-radius: 3px;
             font-size: 0.75em;
             white-space: nowrap;
-            animation: streamFlow 15s linear forwards;
+            animation: streamFlow 12s linear forwards;
+            font-weight: 300;
         }
         
         @keyframes streamFlow {
@@ -285,7 +339,7 @@
             100% { transform: translateX(-100%); opacity: 0; }
         }
         
-        .event-arbitrage { background: rgba(74, 222, 128, 0.2); border-left: 3px solid var(--grafana-green); }
+        .event-arbitrage { background: rgba(124, 242, 124, 0.2); border-left: 3px solid var(--grafana-green); }
         .event-flashloan { background: rgba(87, 148, 242, 0.2); border-left: 3px solid var(--grafana-blue); }
         .event-trade { background: rgba(255, 152, 48, 0.2); border-left: 3px solid var(--grafana-orange); }
         .event-security { background: rgba(242, 73, 92, 0.2); border-left: 3px solid var(--grafana-red); }
@@ -293,12 +347,12 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- LEFT-ALIGNED HEADER WITH GASLESS MODE -->
+        <!-- HEADER -->
         <div class="enterprise-header">
-            <div class="header-left">
+            <div>
                 <div class="main-title">í´® Quantum Arbitrage Engine</div>
                 <div class="subtitle">ENTERPRISE SECURE | ZERO PRIVATE KEYS | BACKEND-ONLY MICROSERVICES</div>
-                <div class="gasless-badge">GASLESS MODE ACTIVE</div>
+                <div class="gasless-indicator">GASLESS MODE: Powered by Pilmico Network</div>
                 
                 <div class="lifetime-metrics">
                     <div class="lifetime-item">
@@ -350,7 +404,7 @@
             <!-- Live Execution -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">ï¿½ï¿½ Live Execution</div>
+                    <div class="card-title">í´„ Live Execution</div>
                 </div>
                 <div class="metric-grid-4col">
                     <div class="metric-item">
@@ -400,7 +454,7 @@
             <!-- Bot Metrics -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">ï¿½ï¿½ Bot Network</div>
+                    <div class="card-title">í´– Bot Network</div>
                 </div>
                 <div class="metric-grid-3col">
                     <div class="metric-item">
@@ -419,24 +473,10 @@
                         <div style="font-size: 0.7em; color: #888;">ACTIVE</div>
                     </div>
                 </div>
-                <div class="metric-grid-3col" style="margin-top: 8px;">
-                    <div class="metric-item">
-                        <div class="metric-label">Total Bots</div>
-                        <div class="metric-number">17</div>
-                    </div>
-                    <div class="metric-item">
-                        <div class="metric-label">Active</div>
-                        <div class="metric-number profit-positive">17</div>
-                    </div>
-                    <div class="metric-item">
-                        <div class="metric-label">Inactive</div>
-                        <div class="metric-number">0</div>
-                    </div>
-                </div>
             </div>
         </div>
 
-        <!-- ROW 2: AI OPTIMIZATION & BLOCKCHAIN STREAMING -->
+        <!-- ROW 2: AI OPTIMIZATION WITH REINVESTMENT CONTROL -->
         <div class="metrics-grid">
             <!-- AI Optimization -->
             <div class="card">
@@ -490,6 +530,27 @@
                         <div style="font-size: 0.7em; color: #888;">210 runs</div>
                     </div>
                 </div>
+
+                <!-- PROFIT REINVESTMENT CONTROL -->
+                <div class="reinvestment-control">
+                    <div class="slider-header">
+                        <div class="slider-label">Profit Reinvestment Rate</div>
+                        <div class="slider-value" id="reinvestmentValue">65%</div>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" min="1" max="100" value="65" class="reinvestment-slider" id="reinvestmentSlider" oninput="updateReinvestment(this.value)">
+                    </div>
+                    <div class="slider-ticks">
+                        <span>1%</span>
+                        <span>25%</span>
+                        <span>50%</span>
+                        <span>75%</span>
+                        <span>100%</span>
+                    </div>
+                    <div style="font-size: 0.75em; color: #888; margin-top: 8px; text-align: center;">
+                        AI will reinvest <span class="profit-positive" id="reinvestmentAmount">$81,000</span> of profits back into trading capital
+                    </div>
+                </div>
             </div>
 
             <!-- Blockchain Streaming -->
@@ -532,7 +593,7 @@
                     <div class="metric-item">
                         <div class="metric-label">Triangular</div>
                         <div class="metric-number profit-positive" id="triangularProfit">$42.8K</div>
-                        <div style="font-size: 0.7em; color: #888;">96.1% í¿¢ï¿½ï¿½í¿¢í´´</div>
+                        <div style="font-size: 0.7em; color: #888;">96.1% í¿¢í¿¢í¿¢í´´</div>
                     </div>
                     <div class="metric-item">
                         <div class="metric-label">Cross-DEX</div>
@@ -552,7 +613,7 @@
                 </div>
             </div>
 
-            <!-- Smart Wallet (Gasless) -->
+            <!-- Smart Wallet -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">í¿¦ Smart Wallet</div>
@@ -574,15 +635,13 @@
                         <div style="font-size: 0.7em; color: #888;">2H â€¢ 12.4%</div>
                     </div>
                 </div>
-                <div style="margin-top: 10px; padding: 8px; background: rgba(74, 222, 128, 0.1); border-radius: 4px; text-align: center;">
-                    <div style="font-size: 0.8em; color: var(--grafana-green);">íº€ GASLESS MODE: All transactions sponsored by relay network</div>
-                </div>
             </div>
         </div>
     </div>
 
     <script>
         let currencyMode = 'USD';
+        let reinvestmentRate = 65;
         let ethPrices = {
             triangular: 42800, crossDEX: 31200, flashArb: 28900, mev: 12400,
             available: 89400, lifetime: 124582, hourly: 1247
@@ -596,10 +655,9 @@
         }
         
         function updateCurrencyDisplay() {
-            const ethToUsdRate = 1870; // Example conversion rate
+            const ethToUsdRate = 1870;
             
             if (currencyMode === 'ETH') {
-                // Convert USD to ETH
                 document.getElementById('triangularProfit').textContent = (ethPrices.triangular / ethToUsdRate).toFixed(1) + ' ETH';
                 document.getElementById('crossDEXProfit').textContent = (ethPrices.crossDEX / ethToUsdRate).toFixed(1) + ' ETH';
                 document.getElementById('flashArbProfit').textContent = (ethPrices.flashArb / ethToUsdRate).toFixed(1) + ' ETH';
@@ -608,7 +666,6 @@
                 document.getElementById('lifetimeProfit').textContent = (ethPrices.lifetime / ethToUsdRate).toFixed(1) + ' ETH';
                 document.getElementById('profitPerHour').textContent = (ethPrices.hourly / ethToUsdRate).toFixed(1) + ' ETH';
             } else {
-                // Convert ETH to USD
                 document.getElementById('triangularProfit').textContent = '$' + ethPrices.triangular.toLocaleString();
                 document.getElementById('crossDEXProfit').textContent = '$' + ethPrices.crossDEX.toLocaleString();
                 document.getElementById('flashArbProfit').textContent = '$' + ethPrices.flashArb.toLocaleString();
@@ -617,6 +674,18 @@
                 document.getElementById('lifetimeProfit').textContent = '$' + ethPrices.lifetime.toLocaleString();
                 document.getElementById('profitPerHour').textContent = '$' + ethPrices.hourly.toLocaleString();
             }
+        }
+        
+        function updateReinvestment(value) {
+            reinvestmentRate = parseInt(value);
+            document.getElementById('reinvestmentValue').textContent = value + '%';
+            
+            // Calculate reinvestment amount based on lifetime profit
+            const reinvestmentAmount = (ethPrices.lifetime * reinvestmentRate / 100);
+            document.getElementById('reinvestmentAmount').textContent = '$' + reinvestmentAmount.toLocaleString('en-US', {maximumFractionDigits: 0});
+            
+            console.log('AI Optimization: Profit reinvestment rate set to', value + '%');
+            // In real implementation, this would send to AI optimization engine
         }
         
         function updateRefreshRate(rate) {
@@ -632,7 +701,9 @@
             { type: 'trade', text: 'í²¸ Cross-DEX: UNI/ETH +0.18% spread', class: 'event-trade' },
             { type: 'security', text: 'í»¡ï¸ MEV Defence: Front-run blocked', class: 'event-security' },
             { type: 'arbitrage', text: 'í¾¯ Statistical Arb: BTC/ETH +0.31%', class: 'event-arbitrage' },
-            { type: 'flashloan', text: 'âš¡ Aave Loan: $180K executed', class: 'event-flashloan' }
+            { type: 'flashloan', text: 'âš¡ Aave Loan: $180K executed', class: 'event-flashloan' },
+            { type: 'trade', text: 'í²« Gasless Trade: MATIC/USDC via Pilmico', class: 'event-trade' },
+            { type: 'arbitrage', text: 'í³ˆ Cross-chain Arb: ETHâ†’BSC +0.57%', class: 'event-arbitrage' }
         ];
         
         function createStreamEvent() {
@@ -643,30 +714,30 @@
             eventElement.className = `stream-event ${event.class}`;
             eventElement.textContent = event.text;
             eventElement.style.top = Math.random() * 80 + 'px';
-            eventElement.style.animationDuration = (10 + Math.random() * 10) + 's';
+            eventElement.style.animationDuration = (8 + Math.random() * 8) + 's';
             
             streamContainer.appendChild(eventElement);
             
-            // Remove event after animation completes
             setTimeout(() => {
                 if (eventElement.parentNode) {
                     eventElement.parentNode.removeChild(eventElement);
                 }
-            }, 20000);
+            }, 16000);
         }
         
         function startStreaming() {
-            setInterval(createStreamEvent, 800);
+            setInterval(createStreamEvent, 600);
         }
         
         function simulateLiveData() {
-            // Simulate real-time updates
-            const profitElements = document.querySelectorAll('.profit-positive');
-            profitElements.forEach(element => {
-                if (element.textContent.includes('$') || element.textContent.includes('%')) {
+            // Simulate real-time metric updates
+            const metrics = ['dailyROI', 'profitPerHour'];
+            metrics.forEach(metricId => {
+                const element = document.getElementById(metricId);
+                if (element) {
                     const currentValue = parseFloat(element.textContent.replace(/[$,%]/g, ''));
-                    const randomChange = (Math.random() - 0.5) * (currentValue * 0.02);
-                    const newValue = Math.max(0, currentValue + randomChange);
+                    const randomChange = (Math.random() - 0.5) * (currentValue * 0.015);
+                    const newValue = Math.max(0.1, currentValue + randomChange);
                     
                     if (element.textContent.includes('$')) {
                         element.textContent = '$' + newValue.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
@@ -683,6 +754,7 @@
         
         // Initialize
         updateCurrencyDisplay();
+        updateReinvestment(65);
         startDataRefresh();
         startStreaming();
         
