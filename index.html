@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Arbitrage Engine - Enterprise Dashboard</title>
+    <title>Quantum Arbitrage Engine</title>
     <style>
         :root {
             --grafana-dark: #1e1e1e;
@@ -14,6 +14,7 @@
             --grafana-blue: #5794f2;
             --grafana-orange: #ff9830;
             --grafana-red: #f2495c;
+            --grafana-purple: #b877d9;
         }
         
         * {
@@ -27,232 +28,577 @@
             background: var(--grafana-dark);
             color: var(--grafana-text);
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
+            font-size: 13px;
         }
         
         .dashboard-container {
-            max-width: 1400px;
+            max-width: 1800px;
             margin: 0 auto;
         }
         
+        /* MINIMALIST HEADER */
         .enterprise-header {
             text-align: center;
             background: var(--grafana-panel);
             border: 1px solid var(--grafana-border);
-            border-radius: 8px;
-            padding: 30px;
-            margin-bottom: 20px;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 15px;
         }
         
-        .enterprise-header h1 {
-            font-size: 2.5em;
+        .main-title {
+            font-size: 1.8em;
             color: var(--grafana-blue);
-            margin-bottom: 10px;
+            margin-bottom: 5px;
+            font-weight: 300;
         }
         
+        .subtitle {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 10px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+        
+        .lifetime-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .lifetime-item {
+            padding: 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .lifetime-value {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--grafana-green);
+        }
+        
+        .lifetime-label {
+            font-size: 0.75em;
+            color: #888;
+            margin-top: 2px;
+        }
+        
+        /* CONTROLS - MINIMALIST */
+        .header-controls {
+            background: var(--grafana-panel);
+            border: 1px solid var(--grafana-border);
+            border-radius: 6px;
+            padding: 12px 20px;
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .control-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-btn {
+            background: var(--grafana-border);
+            border: 1px solid var(--grafana-border);
+            border-radius: 4px;
+            padding: 6px 10px;
+            color: var(--grafana-text);
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+        
+        .control-select {
+            background: var(--grafana-border);
+            border: 1px solid var(--grafana-border);
+            border-radius: 4px;
+            padding: 6px 10px;
+            color: var(--grafana-text);
+            font-size: 0.85em;
+        }
+        
+        /* COMPACT CARD SYSTEM */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .compact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 10px;
         }
         
         .card {
             background: var(--grafana-panel);
             border: 1px solid var(--grafana-border);
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 6px;
+            padding: 15px;
         }
         
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
             border-bottom: 1px solid var(--grafana-border);
         }
         
         .card-title {
-            font-size: 1.1em;
+            font-size: 1em;
             font-weight: 600;
             color: var(--grafana-blue);
         }
         
         .metric-value {
-            font-size: 1.8em;
+            font-size: 1.6em;
             font-weight: 700;
-            margin: 10px 0;
+            margin: 5px 0;
         }
-        
-        .profit-positive { color: var(--grafana-green); }
-        .profit-negative { color: var(--grafana-red); }
         
         .metric-grid-2col {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .metric-grid-4col {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 10px;
         }
         
         .metric-item {
-            padding: 10px;
+            padding: 8px;
             background: rgba(255,255,255,0.05);
             border-radius: 4px;
+            text-align: center;
+        }
+        
+        .metric-label {
+            font-size: 0.75em;
+            color: #888;
+            margin-bottom: 3px;
+        }
+        
+        .metric-number {
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        
+        .profit-positive { color: var(--grafana-green); }
+        .profit-negative { color: var(--grafana-red); }
+        .profit-neutral { color: var(--grafana-orange); }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-active { background: var(--grafana-green); }
+        .status-warning { background: var(--grafana-orange); }
+        .status-critical { background: var(--grafana-red); }
+        
+        /* AI OPTIMIZATION SPECIFIC */
+        .ai-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 10px 0;
+        }
+        
+        .ai-metric {
+            padding: 8px;
+            background: rgba(87, 148, 242, 0.1);
+            border-radius: 4px;
+            text-align: center;
+            border: 1px solid rgba(87, 148, 242, 0.3);
+        }
+        
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin-top: 10px;
+        }
+        
+        .strategy-item {
+            padding: 6px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 3px;
+            text-align: center;
+            font-size: 0.8em;
         }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- ENTERPRISE HEADER -->
+        <!-- MINIMALIST HEADER -->
         <div class="enterprise-header">
-            <h1>Ì¥Æ Quantum Arbitrage Engine</h1>
-            <p>ENTERPRISE SECURE MODE | ZERO PRIVATE KEYS | BACKEND-ONLY ARCHITECTURE</p>
-            <div style="margin-top: 15px;">
-                <strong>Capacity: $100,000,000</strong> | 
-                <strong>System Status: OPERATIONAL</strong> |
-                <strong>Architecture: MICROSERVICES</strong>
-            </div>
-        </div>
-
-        <!-- HEADER CONTROLS -->
-        <div class="card" style="margin-bottom: 20px;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: center;">
-                <div>
-                    <button style="background: var(--grafana-border); border: 1px solid var(--grafana-border); border-radius: 4px; padding: 8px 12px; color: var(--grafana-text); cursor: pointer;" onclick="toggleCurrency()">ETH</button>
-                    <span>Currency Display</span>
+            <div class="main-title">Ì¥Æ Quantum Arbitrage Engine</div>
+            <div class="subtitle">ENTERPRISE SECURE | ZERO PRIVATE KEYS | BACKEND-ONLY MICROSERVICES</div>
+            
+            <div class="lifetime-metrics">
+                <div class="lifetime-item">
+                    <div class="lifetime-value">$124,582</div>
+                    <div class="lifetime-label">Lifetime Profit</div>
                 </div>
-                
-                <div>
-                    <select style="background: var(--grafana-border); border: 1px solid var(--grafana-border); border-radius: 4px; padding: 8px 12px; color: var(--grafana-text);" onchange="updateRefreshRate(this.value)">
-                        <option value="1000">1 Second</option>
-                        <option value="2000">2 Seconds</option>
-                        <option value="5000" selected>5 Seconds</option>
-                        <option value="10000">10 Seconds</option>
-                    </select>
-                    <span>Refresh Rate</span>
+                <div class="lifetime-item">
+                    <div class="lifetime-value">47 days</div>
+                    <div class="lifetime-label">Operational Time</div>
                 </div>
-                
-                <div>
-                    <strong>Total Profit: <span class="profit-positive">12,450.67</span></strong> | 
-                    <strong>Time: 3.5 days</strong>
+                <div class="lifetime-item">
+                    <div class="lifetime-value">1,247</div>
+                    <div class="lifetime-label">AI Optimization Runs</div>
                 </div>
-                
-                <div>
-                    <strong>Profit/Trade: <span class="profit-positive">245.80</span></strong> | 
-                    <strong>Trades/Hour: 8.2</strong>
+                <div class="lifetime-item">
+                    <div class="lifetime-value profit-positive">+27.4%</div>
+                    <div class="lifetime-label">Total Performance Delta</div>
                 </div>
             </div>
         </div>
 
-        <!-- ROW 1: CORE FINANCIAL METRICS -->
+        <!-- MINIMAL CONTROLS -->
+        <div class="header-controls">
+            <div class="control-item">
+                <button class="control-btn" onclick="toggleCurrency()">ETH</button>
+            </div>
+            
+            <div class="control-item">
+                <select class="control-select" onchange="updateRefreshRate(this.value)">
+                    <option value="1000">1s</option>
+                    <option value="2000">2s</option>
+                    <option value="5000" selected>5s</option>
+                    <option value="10000">10s</option>
+                </select>
+            </div>
+            
+            <div class="control-item">
+                <span class="profit-positive">94.2%</span>
+            </div>
+            
+            <div class="control-item">
+                <span>47.3/h</span>
+            </div>
+        </div>
+
+        <!-- ROW 1: CORE PERFORMANCE -->
         <div class="metrics-grid">
-            <!-- Smart Wallet Balance -->
+            <!-- Live Execution -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Ì≤∞ Smart Wallet Balance</div>
+                    <div class="card-title">Ì¥Ñ Live Execution</div>
                 </div>
-                <div class="metric-value profit-positive">47.82 ETH</div>
-                <div style="color: #888; margin-bottom: 15px;">$89,450.00 USD</div>
-                <div class="metric-grid-2col">
+                <div class="metric-grid-4col">
                     <div class="metric-item">
-                        <div>Available</div>
-                        <div class="profit-positive">42.15 ETH</div>
+                        <div class="metric-label">Active</div>
+                        <div class="metric-number">12</div>
                     </div>
                     <div class="metric-item">
-                        <div>Gas Reserve</div>
-                        <div>5.67 ETH</div>
+                        <div class="metric-label">Hourly</div>
+                        <div class="metric-number">47.3</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Success</div>
+                        <div class="metric-number profit-positive">94.2%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Latency</div>
+                        <div class="metric-number">1.2s</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Flash Loan Performance -->
+            <!-- Profitability -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">‚ö° Flash Loan Analytics</div>
+                    <div class="card-title">Ì≤∏ Profitability</div>
                 </div>
-                <div class="metric-value profit-positive">3.8%</div>
-                <div style="color: #888; margin-bottom: 15px;">Average ROI per Loan</div>
-                <div class="metric-grid-2col">
+                <div class="metric-grid-4col">
                     <div class="metric-item">
-                        <div>Utilization</div>
-                        <div>68%</div>
+                        <div class="metric-label">Daily ROI</div>
+                        <div class="metric-number profit-positive">3.8%</div>
                     </div>
                     <div class="metric-item">
-                        <div>Success Rate</div>
-                        <div class="profit-positive">94%</div>
+                        <div class="metric-label">Profit/H</div>
+                        <div class="metric-number">$1,247</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Sharpe</div>
+                        <div class="metric-number">4.2</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Win Rate</div>
+                        <div class="metric-number profit-positive">94.2%</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Gas Cost Analytics -->
+            <!-- Flash Loans -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">‚õΩ Gas Cost Analytics</div>
+                    <div class="card-title">‚ö° Flash Loans</div>
                 </div>
-                <div class="metric-value">2.84 ETH</div>
-                <div style="color: #888; margin-bottom: 15px;">$5,320.00 USD Total</div>
-                <div class="metric-grid-2col">
+                <div class="metric-grid-4col">
                     <div class="metric-item">
-                        <div>Per Trade</div>
-                        <div>0.024 ETH</div>
+                        <div class="metric-label">Active</div>
+                        <div class="metric-number">8</div>
                     </div>
                     <div class="metric-item">
-                        <div>Efficiency</div>
-                        <div class="profit-positive">87%</div>
+                        <div class="metric-label">Loan ROI</div>
+                        <div class="metric-number profit-positive">2.4%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Utilization</div>
+                        <div class="metric-number">78%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Gas Eff</div>
+                        <div class="metric-number profit-positive">92%</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ROW 2: PROFIT BREAKDOWN -->
+        <!-- ROW 2: AI OPTIMIZATION ENGINE -->
+        <div class="card" style="margin-bottom: 12px;">
+            <div class="card-header">
+                <div class="card-title">Ì¥ñ AI Optimization Engine</div>
+            </div>
+            
+            <!-- Core AI Metrics -->
+            <div class="ai-metrics-grid">
+                <div class="ai-metric">
+                    <div class="metric-label">Total Runs</div>
+                    <div class="metric-number">1,247</div>
+                </div>
+                <div class="ai-metric">
+                    <div class="metric-label">Total Delta</div>
+                    <div class="metric-number profit-positive">+27.4%</div>
+                </div>
+                <div class="ai-metric">
+                    <div class="metric-label">Avg Interval</div>
+                    <div class="metric-number">12.3m</div>
+                </div>
+                <div class="ai-metric">
+                    <div class="metric-label">Avg Œî/Run</div>
+                    <div class="metric-number profit-positive">+0.022%</div>
+                </div>
+            </div>
+
+            <!-- Strategy Breakdown -->
+            <div class="strategy-grid">
+                <div class="strategy-item">
+                    <div>Gas AI</div>
+                    <div class="profit-positive">+18.2%</div>
+                    <div style="font-size: 0.7em; color: #888;">342 runs</div>
+                </div>
+                <div class="strategy-item">
+                    <div>Routing</div>
+                    <div class="profit-positive">+23.1%</div>
+                    <div style="font-size: 0.7em; color: #888;">285 runs</div>
+                </div>
+                <div class="strategy-item">
+                    <div>Risk AI</div>
+                    <div class="profit-positive">+14.3%</div>
+                    <div style="font-size: 0.7em; color: #888;">218 runs</div>
+                </div>
+                <div class="strategy-item">
+                    <div>Liquidity</div>
+                    <div class="profit-positive">+12.8%</div>
+                    <div style="font-size: 0.7em; color: #888;">192 runs</div>
+                </div>
+                <div class="strategy-item">
+                    <div>Timing</div>
+                    <div class="profit-positive">+9.7%</div>
+                    <div style="font-size: 0.7em; color: #888;">210 runs</div>
+                </div>
+            </div>
+
+            <!-- Performance Impact -->
+            <div class="metric-grid-4col" style="margin-top: 12px;">
+                <div class="metric-item">
+                    <div class="metric-label">Confidence</div>
+                    <div class="metric-number profit-positive">96%</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Learning</div>
+                    <div class="metric-number">8 cycles</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Impact Score</div>
+                    <div class="metric-number">9.2/10</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">Success Rate</div>
+                    <div class="metric-number profit-positive">94.2%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 3: STRATEGY & BLOCKCHAIN PERFORMANCE -->
         <div class="metrics-grid">
-            <!-- Profit by Strategy -->
+            <!-- Strategy Performance -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Ì≥ä Profit by Strategy</div>
+                    <div class="card-title">Ì≥ä Strategy Performance</div>
                 </div>
                 <div class="metric-grid-2col">
                     <div class="metric-item">
-                        <div>Triangular</div>
-                        <div class="profit-positive">+4,820 ETH</div>
+                        <div class="metric-label">Triangular</div>
+                        <div class="metric-number profit-positive">$42.8K</div>
+                        <div style="font-size: 0.7em; color: #888;">96.1% Ìø¢Ìø¢Ìø¢Ì¥¥</div>
                     </div>
                     <div class="metric-item">
-                        <div>Cross-DEX</div>
-                        <div class="profit-positive">+3,150 ETH</div>
+                        <div class="metric-label">Cross-DEX</div>
+                        <div class="metric-number profit-positive">$31.2K</div>
+                        <div style="font-size: 0.7em; color: #888;">92.4% Ìø¢Ìø¢Ìø¢Ìø¢</div>
                     </div>
                     <div class="metric-item">
-                        <div>Flash Loan</div>
-                        <div class="profit-positive">+2,890 ETH</div>
+                        <div class="metric-label">Flash Arbitrage</div>
+                        <div class="metric-number profit-positive">$28.9K</div>
+                        <div style="font-size: 0.7em; color: #888;">94.7% Ìø¢Ìø¢Ì¥¥Ìø¢</div>
                     </div>
                     <div class="metric-item">
-                        <div>MEV</div>
-                        <div class="profit-positive">+1,240 ETH</div>
+                        <div class="metric-label">MEV Capture</div>
+                        <div class="metric-number profit-positive">$12.4K</div>
+                        <div style="font-size: 0.7em; color: #888;">88.3% Ìø¢Ìø¢Ìø¢Ìø¢</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Profit by Blockchain -->
+            <!-- Blockchain Performance -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">‚õìÔ∏è Profit by Blockchain</div>
+                    <div class="card-title">‚õìÔ∏è Blockchain Performance</div>
                 </div>
                 <div class="metric-grid-2col">
                     <div class="metric-item">
-                        <div>Ethereum</div>
-                        <div class="profit-positive">+6,420 ETH</div>
+                        <div class="metric-label">Ethereum</div>
+                        <div class="metric-number profit-positive">$64.2K</div>
+                        <div style="font-size: 0.7em; color: #888;">$8.4K gas ‚Ä¢ 1.4s ‚Ä¢ 88%</div>
                     </div>
                     <div class="metric-item">
-                        <div>BSC</div>
-                        <div class="profit-positive">+3,180 ETH</div>
+                        <div class="metric-label">BSC</div>
+                        <div class="metric-number profit-positive">$31.8K</div>
+                        <div style="font-size: 0.7em; color: #888;">$1.2K gas ‚Ä¢ 0.8s ‚Ä¢ 96%</div>
                     </div>
                     <div class="metric-item">
-                        <div>Polygon</div>
-                        <div class="profit-positive">+1,850 ETH</div>
+                        <div class="metric-label">Polygon</div>
+                        <div class="metric-number profit-positive">$18.5K</div>
+                        <div style="font-size: 0.7em; color: #888;">$0.8K gas ‚Ä¢ 0.9s ‚Ä¢ 95%</div>
                     </div>
                     <div class="metric-item">
-                        <div>Arbitrum</div>
-                        <div class="profit-positive">+650 ETH</div>
+                        <div class="metric-label">Arbitrum</div>
+                        <div class="metric-number profit-positive">$6.5K</div>
+                        <div style="font-size: 0.7em; color: #888;">$0.6K gas ‚Ä¢ 1.1s ‚Ä¢ 91%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 4: WALLET & SECURITY -->
+        <div class="compact-grid">
+            <!-- Smart Wallet -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Ìø¶ Smart Wallet</div>
+                </div>
+                <div class="metric-grid-2col">
+                    <div class="metric-item">
+                        <div class="metric-label">Available</div>
+                        <div class="metric-number">$89.4K</div>
+                        <div style="font-size: 0.7em; color: #888;">IMMEDIATE</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Staked</div>
+                        <div class="metric-number">$142.2K</div>
+                        <div style="font-size: 0.7em; color: #888;">24H ‚Ä¢ 3.8%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">LP Positions</div>
+                        <div class="metric-number">$56.7K</div>
+                        <div style="font-size: 0.7em; color: #888;">2H ‚Ä¢ 12.4%</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Gas Reserve</div>
+                        <div class="metric-number">$8.2K</div>
+                        <div style="font-size: 0.7em; color: #888;">LOCKED</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Systems -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Ìª°Ô∏è Security Systems</div>
+                </div>
+                <div class="metric-grid-2col">
+                    <div class="metric-item">
+                        <div class="metric-label">MEV Defence</div>
+                        <div class="metric-number profit-positive">96.4%</div>
+                        <div style="font-size: 0.7em; color: #888;">12 BLOCKED</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Front-Run Guard</div>
+                        <div class="metric-number profit-positive">94.2%</div>
+                        <div style="font-size: 0.7em; color: #888;">8 DEFLECTED</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Sandbox Mode</div>
+                        <div class="metric-number profit-positive">98.1%</div>
+                        <div style="font-size: 0.7em; color: #888;">0 BREACHES</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Auto Recovery</div>
+                        <div class="metric-number profit-positive">ACTIVE</div>
+                        <div style="font-size: 0.7em; color: #888;">3 SYSTEMS</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk Metrics -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Ì≥à Risk Metrics</div>
+                </div>
+                <div class="metric-grid-2col">
+                    <div class="metric-item">
+                        <div class="metric-label">Drawdown</div>
+                        <div class="metric-number">2.4%</div>
+                        <div style="font-size: 0.7em; color: var(--grafana-green);">‚úÖ OPTIMAL</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Volatility</div>
+                        <div class="metric-number">8.7%</div>
+                        <div style="font-size: 0.7em; color: var(--grafana-green);">‚úÖ LOW</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Correlation</div>
+                        <div class="metric-number">0.32</div>
+                        <div style="font-size: 0.7em; color: var(--grafana-green);">‚úÖ DIVERSIFIED</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">VaR (24h)</div>
+                        <div class="metric-number">$4.2K</div>
+                        <div style="font-size: 0.7em; color: var(--grafana-green);">‚úÖ ACCEPTABLE</div>
                     </div>
                 </div>
             </div>
@@ -265,7 +611,7 @@
         
         function toggleCurrency() {
             currencyMode = currencyMode === 'ETH' ? 'USD' : 'ETH';
-            document.querySelector('button').textContent = currencyMode;
+            document.querySelector('.control-btn').textContent = currencyMode;
             updateCurrencyDisplay();
         }
         
@@ -280,17 +626,28 @@
         }
         
         function simulateLiveData() {
-            const profitElement = document.querySelector('.profit-positive');
-            const currentProfit = parseFloat(profitElement.textContent.replace(',', ''));
-            const randomChange = (Math.random() - 0.5) * 50;
-            const newProfit = Math.max(0, currentProfit + randomChange);
-            profitElement.textContent = newProfit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            // Simulate real-time updates for key metrics
+            const profitElements = document.querySelectorAll('.profit-positive');
+            profitElements.forEach(element => {
+                if (element.textContent.includes('$') || element.textContent.includes('%')) {
+                    const currentValue = parseFloat(element.textContent.replace(/[$,%]/g, ''));
+                    const randomChange = (Math.random() - 0.5) * (currentValue * 0.02);
+                    const newValue = Math.max(0, currentValue + randomChange);
+                    
+                    if (element.textContent.includes('$')) {
+                        element.textContent = '$' + newValue.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+                    } else {
+                        element.textContent = newValue.toFixed(1) + '%';
+                    }
+                }
+            });
         }
         
         function startDataRefresh() {
             window.refreshTimer = setInterval(simulateLiveData, refreshInterval);
         }
         
+        // Initialize
         startDataRefresh();
     </script>
 </body>
