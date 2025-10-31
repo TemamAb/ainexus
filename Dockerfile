@@ -1,7 +1,12 @@
-FROM node:18-alpine
+FROM python:3.11-slim
+
 WORKDIR /app
-COPY package.json ./
-RUN npm install
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
 COPY . .
-EXPOSE 10000
-CMD ["node", "backend/server.js"]
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
