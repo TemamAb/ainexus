@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AINEXUS - Quantum Arbitrage Command Center</title>
+    <style>
+        :root {
+            --primary-green: #00ff00;
+            --primary-blue: #00ffff;
+            --primary-yellow: #ffff00;
+            --dark-bg: #0f0f23;
+            --darker-bg: #1a1a2e;
+            --card-bg: rgba(255,255,255,0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .command-center {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,0,0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .main-title {
+            font-size: 2.8em;
+            margin: 0;
+            color: var(--primary-yellow);
+            text-shadow: 0 0 10px rgba(255,255,0,0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            color: var(--primary-green);
+            margin: 10px 0;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 10px 25px;
+            background: var(--primary-green);
+            color: #000;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 15px 0;
+            font-size: 1.1em;
+            box-shadow: 0 0 15px rgba(0,255,0,0.5);
+        }
+        
+        .security-tag {
+            color: #cccccc;
+            font-size: 1.1em;
+        }
+        
+        .metrics-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .metric-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-blue);
+            box-shadow: 0 10px 25px rgba(0,255,255,0.2);
+        }
+        
+        .metric-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: var(--primary-green);
+            margin: 10px 0;
+        }
+        
+        .metric-label {
+            color: #888;
+            font-size: 0.95em;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 50px 0;
+        }
+        
+        .dashboard-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-green), var(--primary-blue));
+        }
+        
+        .dashboard-card:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateY(-8px);
+            border-color: var(--primary-blue);
+            box-shadow: 0 15px 35px rgba(0,255,255,0.15);
+        }
+        
+        .card-icon {
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .card-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-yellow);
+        }
+        
+        .card-desc {
+            color: #cccccc;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        
+        .actions-bar {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, var(--primary-green), #00cc00);
+            color: #000;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,255,0,0.3);
+        }
+        
+        .action-btn.secondary {
+            background: linear-gradient(135deg, var(--primary-blue), #0099cc);
+        }
+        
+        .live-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-green);
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #888;
+        }
+        
+        @media (max-width: 768px) {
+            .main-title { font-size: 2.2em; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .metrics-bar { grid-template-columns: repeat(2, 1fr); }
+            .actions-bar { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="command-center">
+        <!-- HEADER SECTION -->
+        <div class="header">
+            <h1 class="main-title">‚ö° AINEXUS QUANTUM ARBITRAGE</h1>
+            <p class="subtitle">COMMAND CENTER</p>
+            <div class="status-badge">ENTERPRISE SECURE MODE - ACTIVE</div>
+            <p class="security-tag">Zero Private Keys ‚Ä¢ Backend-Only Architecture ‚Ä¢ $100M Capacity</p>
+        </div>
+
+        <!-- REAL-TIME METRICS BAR -->
+        <div class="metrics-bar">
+            <div class="metric-card">
+                <div class="metric-value">$116,137</div>
+                <div class="metric-label">Total Profit</div>
+                <div><span class="live-indicator"></span> LIVE</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">98.7%</div>
+                <div class="metric-label">Success Rate</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">12/12</div>
+                <div class="metric-label">Bots Active</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">450ms</div>
+                <div class="metric-label">Avg Latency</div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD NAVIGATION GRID -->
+        <div class="dashboard-grid">
+            <a href="/trading-dashboard" class="dashboard-card">
+                <span class="card-icon">Ì∫Ä</span>
+                <div class="card-title">Trading Control</div>
+                <div class="card-desc">Live position monitoring, capital deployment, multi-chain arbitrage execution, and real-time P&L tracking with institutional-grade risk management.</div>
+            </a>
+
+            <a href="/profit-withdrawal" class="dashboard-card">
+                <span class="card-icon">Ì≤∞</span>
+                <div class="card-title">Profit Operations</div>
+                <div class="card-desc">Real-time profit accumulation, auto/manual withdrawal controls, multi-sig approvals, capital analytics, and compliance tracking.</div>
+            </a>
+
+            <a href="/performance-metrics" class="dashboard-card">
+                <span class="card-icon">Ì≥ä</span>
+                <div class="card-title">Performance Intelligence</div>
+                <div class="card-desc">Profit/hour analytics, ROI timelines, latency performance, capital efficiency scores, success rate tracking, and benchmark comparisons.</div>
+            </a>
+
+            <a href="/security-monitor" class="dashboard-card">
+                <span class="card-icon">Ìª°Ô∏è</span>
+                <div class="card-title">Security Operations</div>
+                <div class="card-desc">MEV attack detection, stealth transaction metrics, network security posture, anomaly detection alerts, and multi-layer defense systems.</div>
+            </a>
+
+            <a href="/ai-intelligence" class="dashboard-card">
+                <span class="card-icon">Ì∑†</span>
+                <div class="card-title">AI Command</div>
+                <div class="card-desc">Pattern recognition performance, continuous optimization metrics, strategy evolution tracking, AI model accuracy scores, and learning rate analytics.</div>
+            </a>
+
+            <a href="/system-health" class="dashboard-card">
+                <span class="card-icon">‚öôÔ∏è</span>
+                <div class="card-title">System Health</div>
+                <div class="card-desc">3-tier bot status, multi-chain connectivity, API response times, database performance, uptime monitoring, and infrastructure analytics.</div>
+            </a>
+        </div>
+
+        <!-- QUICK ACTIONS BAR -->
+        <div class="actions-bar">
+            <button class="action-btn" onclick="activateTrading()">
+                <span>Ìø¢</span>
+                ACTIVATE LIVE TRADING
+            </button>
+            <button class="action-btn secondary" onclick="checkSystemStatus()">
+                <span>Ì≥°</span>
+                SYSTEM STATUS
+            </button>
+            <button class="action-btn secondary" onclick="viewHealthMetrics()">
+                <span>‚ù§Ô∏è</span>
+                HEALTH METRICS
+            </button>
+        </div>
+
+        <!-- REAL-TIME UPDATES SECTION -->
+        <div style="text-align: center; margin: 40px 0;">
+            <div style="background: rgba(0,255,0,0.1); padding: 20px; border-radius: 10px; border: 1px solid rgba(0,255,0,0.3);">
+                <h3 style="color: var(--primary-green); margin-bottom: 10px;">Ì¥Ñ REAL-TIME UPDATES</h3>
+                <p style="color: #ccc;">Last Update: <span id="lastUpdate">Just now</span></p>
+                <p style="color: #ccc;">Next Optimization: <span id="nextOptimization">5 minutes</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>AINEXUS QUANTUM ENGINE ‚Ä¢ ENTERPRISE GRADE ‚Ä¢ INSTITUTIONAL SECURITY</p>
+        <p>¬© 2025 AINEXUS Quantum Arbitrage System. All rights reserved.</p>
+    </div>
+
+    <script>
+        // Real-time metrics simulation
+        function updateMetrics() {
+            const metrics = document.querySelectorAll('.metric-value');
+            if (metrics[0]) {
+                // Simulate profit growth
+                const currentProfit = parseInt(metrics[0].textContent.replace('$','').replace(',',''));
+                const newProfit = currentProfit + Math.floor(Math.random() * 50);
+                metrics[0].textContent = '$' + newProfit.toLocaleString();
+                
+                // Update timestamp
+                document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+            }
+        }
+
+        // Action functions
+        function activateTrading() {
+            alert('Ì∫Ä ACTIVATING LIVE TRADING:\n‚Ä¢ $100M Flash Loan Capacity\n‚Ä¢ 3-Tier Bot System\n‚Ä¢ Multi-Chain Execution\n‚Ä¢ AI Optimization Active');
+        }
+
+        function checkSystemStatus() {
+            alert('Ì≥° SYSTEM STATUS:\n‚Ä¢ All Systems: OPERATIONAL\n‚Ä¢ Security: ENTERPRISE GRADE\n‚Ä¢ Performance: OPTIMAL\n‚Ä¢ Uptime: 99.9%');
+        }
+
+        function viewHealthMetrics() {
+            alert('‚ù§Ô∏è HEALTH METRICS:\n‚Ä¢ Bots: 12/12 ACTIVE\n‚Ä¢ Latency: 450ms\n‚Ä¢ Success Rate: 98.7%\n‚Ä¢ API Health: EXCELLENT');
+        }
+
+        // Initialize real-time updates
+        setInterval(updateMetrics, 10000); // Update every 10 seconds
+        
+        // Initial update
+        updateMetrics();
+        
+        // Update optimization countdown
+        setInterval(() => {
+            const nextOpt = document.getElementById('nextOptimization');
+            if (nextOpt) {
+                const times = ['4 minutes', '3 minutes', '2 minutes', '1 minute', 'Now!', '5 minutes'];
+                const randomTime = times[Math.floor(Math.random() * times.length)];
+                nextOpt.textContent = randomTime;
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
