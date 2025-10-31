@@ -165,7 +165,7 @@
         
         .metric-value {
             font-size: 1.6em;
-            font-weight: 300; /* Light and thin */
+            font-weight: 300;
             margin: 5px 0;
             color: var(--grafana-green);
         }
@@ -207,7 +207,7 @@
         
         .metric-number {
             font-size: 1.1em;
-            font-weight: 300; /* Light and thin */
+            font-weight: 300;
             color: var(--grafana-green);
         }
         
@@ -320,6 +320,7 @@
             overflow: hidden;
             position: relative;
             margin-top: 10px;
+            border: 1px solid var(--grafana-border);
         }
         
         .stream-event {
@@ -328,8 +329,9 @@
             border-radius: 3px;
             font-size: 0.75em;
             white-space: nowrap;
-            animation: streamFlow 12s linear forwards;
+            animation: streamFlow 8s linear forwards;
             font-weight: 300;
+            border-left: 3px solid;
         }
         
         @keyframes streamFlow {
@@ -339,10 +341,44 @@
             100% { transform: translateX(-100%); opacity: 0; }
         }
         
-        .event-arbitrage { background: rgba(124, 242, 124, 0.2); border-left: 3px solid var(--grafana-green); }
-        .event-flashloan { background: rgba(87, 148, 242, 0.2); border-left: 3px solid var(--grafana-blue); }
-        .event-trade { background: rgba(255, 152, 48, 0.2); border-left: 3px solid var(--grafana-orange); }
-        .event-security { background: rgba(242, 73, 92, 0.2); border-left: 3px solid var(--grafana-red); }
+        .event-arbitrage { background: rgba(124, 242, 124, 0.15); border-left-color: var(--grafana-green); }
+        .event-flashloan { background: rgba(87, 148, 242, 0.15); border-left-color: var(--grafana-blue); }
+        .event-trade { background: rgba(255, 152, 48, 0.15); border-left-color: var(--grafana-orange); }
+        .event-security { background: rgba(242, 73, 92, 0.15); border-left-color: var(--grafana-red); }
+        
+        /* FLASH LOAN METRICS */
+        .provider-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .provider-item {
+            padding: 6px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 3px;
+            font-size: 0.8em;
+        }
+        
+        .provider-name {
+            font-weight: 600;
+            color: var(--grafana-blue);
+        }
+        
+        .utilization-bar {
+            height: 4px;
+            background: var(--grafana-border);
+            border-radius: 2px;
+            margin-top: 3px;
+            overflow: hidden;
+        }
+        
+        .utilization-fill {
+            height: 100%;
+            background: var(--grafana-green);
+            transition: width 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -382,7 +418,7 @@
             </div>
             
             <div class="control-item">
-                <select class="control-select" onchange="updateRefreshRate(this.value)">
+                <select class="control-select" id="refreshSelect" onchange="updateRefreshRate(this.value)">
                     <option value="1000">1s</option>
                     <option value="2000">2s</option>
                     <option value="5000" selected>5s</option>
@@ -391,11 +427,11 @@
             </div>
             
             <div class="control-item">
-                <span class="profit-positive">94.2%</span>
+                <span class="profit-positive" id="successRate">94.2%</span>
             </div>
             
             <div class="control-item">
-                <span>47.3/h</span>
+                <span id="tradesPerHour">47.3/h</span>
             </div>
         </div>
 
@@ -409,44 +445,68 @@
                 <div class="metric-grid-4col">
                     <div class="metric-item">
                         <div class="metric-label">Active</div>
-                        <div class="metric-number">12</div>
+                        <div class="metric-number" id="activeTrades">12</div>
                     </div>
                     <div class="metric-item">
                         <div class="metric-label">Hourly</div>
-                        <div class="metric-number">47.3</div>
+                        <div class="metric-number" id="tradesHourly">47.3</div>
                     </div>
                     <div class="metric-item">
                         <div class="metric-label">Success</div>
-                        <div class="metric-number profit-positive">94.2%</div>
+                        <div class="metric-number profit-positive" id="successRateMetric">94.2%</div>
                     </div>
                     <div class="metric-item">
                         <div class="metric-label">Latency</div>
-                        <div class="metric-number">1.2s</div>
+                        <div class="metric-number" id="executionLatency">1.2s</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Profitability -->
+            <!-- Flash Loan Analytics -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">í²¸ Profitability</div>
+                    <div class="card-title">âš¡ Flash Loan Analytics</div>
                 </div>
                 <div class="metric-grid-4col">
                     <div class="metric-item">
-                        <div class="metric-label">Daily ROI</div>
-                        <div class="metric-number profit-positive" id="dailyROI">3.8%</div>
+                        <div class="metric-label">Available</div>
+                        <div class="metric-number" id="flashAvailable">$4.2M</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-label">Profit/H</div>
-                        <div class="metric-number" id="profitPerHour">$1,247</div>
+                        <div class="metric-label">Utilized</div>
+                        <div class="metric-number profit-positive" id="flashUtilized">68%</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-label">Sharpe</div>
-                        <div class="metric-number">4.2</div>
+                        <div class="metric-label">Active Loans</div>
+                        <div class="metric-number" id="activeLoans">8</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-label">Win Rate</div>
-                        <div class="metric-number profit-positive">94.2%</div>
+                        <div class="metric-label">Avg ROI</div>
+                        <div class="metric-number profit-positive" id="flashROI">2.4%</div>
+                    </div>
+                </div>
+                
+                <!-- Provider Breakdown -->
+                <div class="provider-grid">
+                    <div class="provider-item">
+                        <div class="provider-name">Aave</div>
+                        <div>$1.8M â€¢ 72% util</div>
+                        <div class="utilization-bar"><div class="utilization-fill" style="width: 72%"></div></div>
+                    </div>
+                    <div class="provider-item">
+                        <div class="provider-name">dYdX</div>
+                        <div>$1.2M â€¢ 65% util</div>
+                        <div class="utilization-bar"><div class="utilization-fill" style="width: 65%"></div></div>
+                    </div>
+                    <div class="provider-item">
+                        <div class="provider-name">Uniswap</div>
+                        <div>$0.8M â€¢ 58% util</div>
+                        <div class="utilization-bar"><div class="utilization-fill" style="width: 58%"></div></div>
+                    </div>
+                    <div class="provider-item">
+                        <div class="provider-name">Compound</div>
+                        <div>$0.4M â€¢ 45% util</div>
+                        <div class="utilization-bar"><div class="utilization-fill" style="width: 45%"></div></div>
                     </div>
                 </div>
             </div>
@@ -476,7 +536,7 @@
             </div>
         </div>
 
-        <!-- ROW 2: AI OPTIMIZATION WITH REINVESTMENT CONTROL -->
+        <!-- ROW 2: AI OPTIMIZATION & BLOCKCHAIN STREAMING -->
         <div class="metrics-grid">
             <!-- AI Optimization -->
             <div class="card">
@@ -564,19 +624,19 @@
                 <div class="metric-grid-4col" style="margin-top: 10px;">
                     <div class="metric-item">
                         <div class="metric-label">Events/s</div>
-                        <div class="metric-number">384</div>
+                        <div class="metric-number" id="eventsPerSecond">384</div>
                     </div>
                     <div class="metric-item">
                         <div class="metric-label">Arbitrage</div>
-                        <div class="metric-number profit-positive">42</div>
+                        <div class="metric-number profit-positive" id="arbitrageEvents">42</div>
                     </div>
                     <div class="metric-item">
                         <div class="metric-label">Flash Loans</div>
-                        <div class="metric-number">18</div>
+                        <div class="metric-number" id="flashLoanEvents">18</div>
                     </div>
                     <div class="metric-item">
                         <div class="metric-label">Trades</div>
-                        <div class="metric-number">247</div>
+                        <div class="metric-number" id="tradeEvents">247</div>
                     </div>
                 </div>
             </div>
@@ -642,9 +702,29 @@
     <script>
         let currencyMode = 'USD';
         let reinvestmentRate = 65;
-        let ethPrices = {
-            triangular: 42800, crossDEX: 31200, flashArb: 28900, mev: 12400,
-            available: 89400, lifetime: 124582, hourly: 1247
+        let refreshInterval = 5000;
+        
+        // Live data state
+        let liveData = {
+            activeTrades: 12,
+            tradesHourly: 47.3,
+            successRate: 94.2,
+            executionLatency: 1.2,
+            flashAvailable: 4200000,
+            flashUtilized: 68,
+            activeLoans: 8,
+            flashROI: 2.4,
+            eventsPerSecond: 384,
+            arbitrageEvents: 42,
+            flashLoanEvents: 18,
+            tradeEvents: 247,
+            triangularProfit: 42800,
+            crossDEXProfit: 31200,
+            flashArbProfit: 28900,
+            mevProfit: 12400,
+            availableBalance: 89400,
+            lifetimeProfit: 124582,
+            profitPerHour: 1247
         };
         
         function toggleCurrency() {
@@ -658,21 +738,19 @@
             const ethToUsdRate = 1870;
             
             if (currencyMode === 'ETH') {
-                document.getElementById('triangularProfit').textContent = (ethPrices.triangular / ethToUsdRate).toFixed(1) + ' ETH';
-                document.getElementById('crossDEXProfit').textContent = (ethPrices.crossDEX / ethToUsdRate).toFixed(1) + ' ETH';
-                document.getElementById('flashArbProfit').textContent = (ethPrices.flashArb / ethToUsdRate).toFixed(1) + ' ETH';
-                document.getElementById('mevProfit').textContent = (ethPrices.mev / ethToUsdRate).toFixed(1) + ' ETH';
-                document.getElementById('availableBalance').textContent = (ethPrices.available / ethToUsdRate).toFixed(1) + ' ETH';
-                document.getElementById('lifetimeProfit').textContent = (ethPrices.lifetime / ethToUsdRate).toFixed(1) + ' ETH';
-                document.getElementById('profitPerHour').textContent = (ethPrices.hourly / ethToUsdRate).toFixed(1) + ' ETH';
+                document.getElementById('triangularProfit').textContent = (liveData.triangularProfit / ethToUsdRate).toFixed(1) + ' ETH';
+                document.getElementById('crossDEXProfit').textContent = (liveData.crossDEXProfit / ethToUsdRate).toFixed(1) + ' ETH';
+                document.getElementById('flashArbProfit').textContent = (liveData.flashArbProfit / ethToUsdRate).toFixed(1) + ' ETH';
+                document.getElementById('mevProfit').textContent = (liveData.mevProfit / ethToUsdRate).toFixed(1) + ' ETH';
+                document.getElementById('availableBalance').textContent = (liveData.availableBalance / ethToUsdRate).toFixed(1) + ' ETH';
+                document.getElementById('lifetimeProfit').textContent = (liveData.lifetimeProfit / ethToUsdRate).toFixed(1) + ' ETH';
             } else {
-                document.getElementById('triangularProfit').textContent = '$' + ethPrices.triangular.toLocaleString();
-                document.getElementById('crossDEXProfit').textContent = '$' + ethPrices.crossDEX.toLocaleString();
-                document.getElementById('flashArbProfit').textContent = '$' + ethPrices.flashArb.toLocaleString();
-                document.getElementById('mevProfit').textContent = '$' + ethPrices.mev.toLocaleString();
-                document.getElementById('availableBalance').textContent = '$' + ethPrices.available.toLocaleString();
-                document.getElementById('lifetimeProfit').textContent = '$' + ethPrices.lifetime.toLocaleString();
-                document.getElementById('profitPerHour').textContent = '$' + ethPrices.hourly.toLocaleString();
+                document.getElementById('triangularProfit').textContent = '$' + liveData.triangularProfit.toLocaleString();
+                document.getElementById('crossDEXProfit').textContent = '$' + liveData.crossDEXProfit.toLocaleString();
+                document.getElementById('flashArbProfit').textContent = '$' + liveData.flashArbProfit.toLocaleString();
+                document.getElementById('mevProfit').textContent = '$' + liveData.mevProfit.toLocaleString();
+                document.getElementById('availableBalance').textContent = '$' + liveData.availableBalance.toLocaleString();
+                document.getElementById('lifetimeProfit').textContent = '$' + liveData.lifetimeProfit.toLocaleString();
             }
         }
         
@@ -680,18 +758,19 @@
             reinvestmentRate = parseInt(value);
             document.getElementById('reinvestmentValue').textContent = value + '%';
             
-            // Calculate reinvestment amount based on lifetime profit
-            const reinvestmentAmount = (ethPrices.lifetime * reinvestmentRate / 100);
+            const reinvestmentAmount = (liveData.lifetimeProfit * reinvestmentRate / 100);
             document.getElementById('reinvestmentAmount').textContent = '$' + reinvestmentAmount.toLocaleString('en-US', {maximumFractionDigits: 0});
             
             console.log('AI Optimization: Profit reinvestment rate set to', value + '%');
-            // In real implementation, this would send to AI optimization engine
         }
         
         function updateRefreshRate(rate) {
             refreshInterval = parseInt(rate);
             clearInterval(window.refreshTimer);
+            clearInterval(window.streamTimer);
             startDataRefresh();
+            startStreaming();
+            console.log('Refresh rate updated to:', refreshInterval + 'ms');
         }
         
         // Blockchain Streaming
@@ -714,38 +793,70 @@
             eventElement.className = `stream-event ${event.class}`;
             eventElement.textContent = event.text;
             eventElement.style.top = Math.random() * 80 + 'px';
-            eventElement.style.animationDuration = (8 + Math.random() * 8) + 's';
+            eventElement.style.animationDuration = (6 + Math.random() * 6) + 's';
             
             streamContainer.appendChild(eventElement);
+            
+            // Update event counters
+            if (event.type === 'arbitrage') {
+                liveData.arbitrageEvents++;
+                document.getElementById('arbitrageEvents').textContent = liveData.arbitrageEvents;
+            } else if (event.type === 'flashloan') {
+                liveData.flashLoanEvents++;
+                document.getElementById('flashLoanEvents').textContent = liveData.flashLoanEvents;
+            } else if (event.type === 'trade') {
+                liveData.tradeEvents++;
+                document.getElementById('tradeEvents').textContent = liveData.tradeEvents;
+            }
             
             setTimeout(() => {
                 if (eventElement.parentNode) {
                     eventElement.parentNode.removeChild(eventElement);
                 }
-            }, 16000);
+            }, 12000);
         }
         
         function startStreaming() {
-            setInterval(createStreamEvent, 600);
+            const streamRate = Math.max(300, refreshInterval / 2);
+            window.streamTimer = setInterval(createStreamEvent, streamRate);
         }
         
         function simulateLiveData() {
-            // Simulate real-time metric updates
-            const metrics = ['dailyROI', 'profitPerHour'];
-            metrics.forEach(metricId => {
-                const element = document.getElementById(metricId);
+            // Update all live metrics with realistic variations
+            const metrics = [
+                { id: 'activeTrades', value: () => Math.max(1, liveData.activeTrades + Math.floor(Math.random() * 3) - 1) },
+                { id: 'tradesHourly', value: () => Math.max(10, liveData.tradesHourly + (Math.random() - 0.5) * 2) },
+                { id: 'successRate', value: () => Math.max(85, Math.min(99, liveData.successRate + (Math.random() - 0.5) * 0.5)) },
+                { id: 'executionLatency', value: () => Math.max(0.8, Math.min(2.5, liveData.executionLatency + (Math.random() - 0.5) * 0.1)) },
+                { id: 'flashUtilized', value: () => Math.max(50, Math.min(85, liveData.flashUtilized + (Math.random() - 0.5) * 2)) },
+                { id: 'activeLoans', value: () => Math.max(1, liveData.activeLoans + Math.floor(Math.random() * 2) - 1) },
+                { id: 'flashROI', value: () => Math.max(1.5, Math.min(4.0, liveData.flashROI + (Math.random() - 0.5) * 0.2)) },
+                { id: 'eventsPerSecond', value: () => Math.max(200, Math.min(500, liveData.eventsPerSecond + (Math.random() - 0.5) * 20)) }
+            ];
+            
+            metrics.forEach(metric => {
+                const newValue = metric.value();
+                liveData[metric.id] = newValue;
+                
+                const element = document.getElementById(metric.id);
                 if (element) {
-                    const currentValue = parseFloat(element.textContent.replace(/[$,%]/g, ''));
-                    const randomChange = (Math.random() - 0.5) * (currentValue * 0.015);
-                    const newValue = Math.max(0.1, currentValue + randomChange);
-                    
-                    if (element.textContent.includes('$')) {
-                        element.textContent = '$' + newValue.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
-                    } else {
+                    if (metric.id.includes('Rate') || metric.id.includes('ROI') || metric.id.includes('Utilized')) {
                         element.textContent = newValue.toFixed(1) + '%';
+                    } else if (metric.id === 'executionLatency') {
+                        element.textContent = newValue.toFixed(1) + 's';
+                    } else if (metric.id === 'tradesHourly') {
+                        element.textContent = newValue.toFixed(1);
+                    } else if (metric.id === 'eventsPerSecond') {
+                        element.textContent = Math.round(newValue);
+                    } else {
+                        element.textContent = Math.round(newValue);
                     }
                 }
             });
+            
+            // Update header metrics
+            document.getElementById('successRate').textContent = liveData.successRate.toFixed(1) + '%';
+            document.getElementById('tradesPerHour').textContent = liveData.tradesHourly.toFixed(1) + '/h';
         }
         
         function startDataRefresh() {
@@ -758,7 +869,8 @@
         startDataRefresh();
         startStreaming();
         
-        let refreshInterval = 5000;
+        // Set initial values
+        simulateLiveData();
     </script>
 </body>
 </html>
