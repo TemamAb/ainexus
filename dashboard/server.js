@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 10000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-// ENHANCED MASTER DASHBOARD - COMMAND CENTER
+// MASTER COMMAND CENTER DASHBOARD
 app.get('/', (req, res) => {
     res.send(`
         <!DOCTYPE html>
@@ -213,26 +213,13 @@ app.get('/', (req, res) => {
                         alert('Status check unavailable');
                     }
                 }
-
-                // Real-time metrics update
-                setInterval(async () => {
-                    try {
-                        const response = await fetch('/api/live-metrics');
-                        const data = await response.json();
-                        // Update metrics bar in real-time
-                        document.querySelectorAll('.metric-value')[0].textContent = '$' + data.total_profit;
-                        document.querySelectorAll('.metric-value')[1].textContent = data.success_rate + '%';
-                    } catch (error) {
-                        console.log('Metrics update failed');
-                    }
-                }, 10000);
             </script>
         </body>
         </html>
     `);
 });
 
-// KEEP ALL EXISTING PROFESSIONAL ENDPOINTS
+// KEEP EXISTING PROFESSIONAL ENDPOINTS
 app.get('/health', (req, res) => {
     res.json({ 
         status: "QUANTUM ENGINE - ENTERPRISE MODE",
@@ -243,7 +230,7 @@ app.get('/health', (req, res) => {
             "Wallet-Agnostic Execution", 
             "Smart Contract Integration",
             "API-First Design",
-            "Master Dashboard Navigation",
+            "Master Command Center",
             "Six Specialized Dashboards"
         ],
         profit_capacity: "$100,000,000",
@@ -260,31 +247,11 @@ app.get('/api', (req, res) => {
         key_management: "External Wallet Integration Only",
         compliance: "Institutional Grade",
         scalability: "$1B+ Capacity",
-        dashboard_architecture: {
-            master: "Command Center",
-            specialized: [
-                "Trading Control",
-                "Profit Operations", 
-                "Performance Intelligence",
-                "Security Operations",
-                "AI Command",
-                "System Health"
-            ]
-        }
+        dashboard_architecture: "MASTER_COMMAND_CENTER"
     });
 });
 
-// ADDITIONAL API ENDPOINTS FOR MASTER DASHBOARD
-app.get('/api/live-metrics', (req, res) => {
-    res.json({
-        total_profit: (116137 + Math.random() * 1000).toFixed(0),
-        success_rate: 98.7,
-        active_bots: 12,
-        avg_latency: 450,
-        timestamp: new Date().toISOString()
-    });
-});
-
+// ADD NEW API ENDPOINTS
 app.get('/api/four-pillars-status', (req, res) => {
     res.json({
         status: "FOUR_PILLARS_ACTIVE",
@@ -296,18 +263,18 @@ app.get('/api/four-pillars-status', (req, res) => {
 app.post('/api/activate-trading', (req, res) => {
     res.json({
         status: "TRADING_ACTIVATED",
-        message: "Quantum arbitrage command center now operational. All dashboards ready for deployment.",
+        message: "Quantum arbitrage command center operational. All systems ready.",
         timestamp: new Date().toISOString()
     });
 });
 
-// PLACEHOLDER DASHBOARDS (To be built in Phase 2)
+// PLACEHOLDER DASHBOARDS
 app.get('/trading-dashboard', (req, res) => {
     res.send(`
         <html>
         <body style="background: #0f0f23; color: white; padding: 40px; font-family: Arial;">
             <h1>Ì∫Ä Trading Control Dashboard</h1>
-            <p><em>Phase 2 Deployment - Coming in 48 hours</em></p>
+            <p><em>Phase 2 Deployment - Coming Soon</em></p>
             <p>‚Ä¢ Live Position Monitoring</p>
             <p>‚Ä¢ Capital Deployment Tracking</p>
             <p>‚Ä¢ Multi-Chain Arbitrage Execution</p>
@@ -319,16 +286,42 @@ app.get('/trading-dashboard', (req, res) => {
     `);
 });
 
-// Add similar placeholder routes for other dashboards...
-app.get('/profit-withdrawal', (req, res) => { res.redirect('/'); });
-app.get('/performance-metrics', (req, res) => { res.redirect('/'); });
-app.get('/security-monitor', (req, res) => { res.redirect('/'); });
-app.get('/ai-intelligence', (req, res) => { res.redirect('/'); });
-app.get('/system-health', (req, res) => { res.redirect('/'); });
+app.get('/profit-withdrawal', (req, res) => {
+    res.send(`
+        <html>
+        <body style="background: #0f0f23; color: white; padding: 40px; font-family: Arial;">
+            <h1>Ì≤∞ Profit Operations Dashboard</h1>
+            <p><em>Phase 2 Deployment - Coming Soon</em></p>
+            <p>‚Ä¢ Real-time Profit Accumulation</p>
+            <p>‚Ä¢ Auto/Manual Withdrawal Controls</p>
+            <p>‚Ä¢ Multi-Sig Approval Workflows</p>
+            <p>‚Ä¢ Capital Allocation Analytics</p>
+            <br>
+            <a href="/" style="color: yellow;">‚Üê Back to Command Center</a>
+        </body>
+        </html>
+    `);
+});
+
+// Add other dashboard placeholders...
+app.get('/performance-metrics', (req, res) => {
+    res.send('<html><body style="background: #0f0f23; color: white; padding: 40px;"><h1>Ì≥ä Performance Intelligence</h1><p>Phase 2</p><a href="/" style="color: yellow;">‚Üê Back</a></body></html>');
+});
+
+app.get('/security-monitor', (req, res) => {
+    res.send('<html><body style="background: #0f0f23; color: white; padding: 40px;"><h1>Ìª°Ô∏è Security Operations</h1><p>Phase 2</p><a href="/" style="color: yellow;">‚Üê Back</a></body></html>');
+});
+
+app.get('/ai-intelligence', (req, res) => {
+    res.send('<html><body style="background: #0f0f23; color: white; padding: 40px;"><h1>Ì∑† AI Command</h1><p>Phase 2</p><a href="/" style="color: yellow;">‚Üê Back</a></body></html>');
+});
+
+app.get('/system-health', (req, res) => {
+    res.send('<html><body style="background: #0f0f23; color: white; padding: 40px;"><h1>‚öôÔ∏è System Health</h1><p>Phase 2</p><a href="/" style="color: yellow;">‚Üê Back</a></body></html>');
+});
 
 app.listen(PORT, () => {
-    console.log("Ì∫Ä AINEXUS MASTER DASHBOARD - PORT", PORT);
-    console.log("ÌæØ COMMAND CENTER: ACTIVE");
-    console.log("Ì≥ä SIX DASHBOARDS: READY FOR DEPLOYMENT");
+    console.log("Ì∫Ä AINEXUS MASTER COMMAND CENTER - PORT", PORT);
+    console.log("ÌæØ ENTERPRISE DASHBOARD: ACTIVE");
     console.log("Ìºê Access: http://localhost:" + PORT);
 });
