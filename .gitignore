@@ -1,0 +1,12 @@
+
+# Environment Files - CRITICAL SECURITY
+.env
+.env.*
+!.env.example
+
+# Secrets
+*_key
+*_secret
+*_token
+*.pem
+*.key
