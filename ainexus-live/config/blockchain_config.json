@@ -1,0 +1,25 @@
+{
+  "networks": {
+    "ethereum": {
+      "rpc_url": "https://mainnet.infura.io/v3/YOUR_PROJECT_ID",
+      "chain_id": 1,
+      "flash_loan_providers": ["aave", "uniswap", "balancer"]
+    },
+    "bsc": {
+      "rpc_url": "https://bsc-dataseed.binance.org/",
+      "chain_id": 56,
+      "flash_loan_providers": ["aave", "pancakeswap"]
+    },
+    "polygon": {
+      "rpc_url": "https://polygon-rpc.com/",
+      "chain_id": 137,
+      "flash_loan_providers": ["aave", "quickswap"]
+    }
+  },
+  "trading_parameters": {
+    "min_profit_threshold": 0.003,
+    "max_trade_size": 1000000,
+    "max_daily_trades": 50,
+    "gas_limit": 5000000
+  }
+}
