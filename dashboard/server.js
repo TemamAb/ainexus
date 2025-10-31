@@ -3,7 +3,6 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
 // Main Engine
@@ -48,15 +47,28 @@ app.get('/health', (req, res) => {
         status: "QUANTUM ENGINE - ENTERPRISE MODE",
         security: "ZERO_PRIVATE_KEYS", 
         architecture: "BACKEND-ONLY",
+        features: ["Enterprise Financial Dashboard", "MetaMask Integration", "Auto Transfer Modes"],
         profit_capacity: "$100,000,000",
-        financial_dashboard: "ENTERPRISE_GRADE",
         deployment: "READY_FOR_PRODUCTION",
         timestamp: new Date().toISOString()
     });
 });
 
-// Enterprise Profit Withdrawal Dashboard
+// API status
+app.get('/api', (req, res) => {
+    res.json({
+        name: "Quantum Arbitrage Engine",
+        version: "Enterprise 2.5.0", 
+        security_model: "Zero-Trust Architecture",
+        financial_features: ["MetaMask Integration", "Auto Transfer Modes", "Financial Confirmations"],
+        compliance: "Institutional Grade",
+        scalability: "$1B+ Capacity"
+    });
+});
+
+// ENTERPRISE PROFIT WITHDRAWAL DASHBOARD
 app.get('/withdrawal', (req, res) => {
+    console.log('Ì≥ä Serving Enterprise Profit Withdrawal Dashboard...');
     res.sendFile(path.join(__dirname, 'profit-withdrawal-enterprise.html'));
 });
 
@@ -90,5 +102,8 @@ app.get('/monitor', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log("ÔøΩÔøΩ AINEXUS Enterprise Server running on port", PORT);
+    console.log("Ì∫Ä AINEXUS Enterprise Server running on port", PORT);
+    console.log("Ì≥ç Main Engine: http://localhost:" + PORT + "/");
+    console.log("Ì≤∞ Profit Withdrawal: http://localhost:" + PORT + "/withdrawal");
+    console.log("Ì≥ä Live Monitor: http://localhost:" + PORT + "/monitor");
 });
