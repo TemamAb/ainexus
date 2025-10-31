@@ -1,6 +1,9 @@
 services:
   - type: web
     name: ainexus-quantum-engine
-    env: static
-    buildCommand: npm install
-    staticPublishPath: .
+    env: docker
+    docker:
+      dockerfile: Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
