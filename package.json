@@ -2,6 +2,9 @@
   "name": "ainexus",
   "version": "1.0.0",
   "scripts": {
-    "start": "python app.py"
+    "start": "npx serve -s . -l 5000"
+  },
+  "dependencies": {
+    "serve": "^14.0.0"
   }
 }

@@ -1,24 +1,6 @@
 services:
   - type: web
     name: ainexus-quantum-engine
-    env: docker
-    docker:
-      dockerfile: Dockerfile
-    envVars:
-      - key: NODE_ENV
-        value: production
-    port: 10000
-    healthCheckPath: /health
-
-  - type: web
-    name: ainexus-trading-dashboard
-    env: docker
-    docker:
-      dockerfile: Dockerfile
-    command: npm run dashboard
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: DASHBOARD_PORT
-        value: 3000
-    port: 3000
+    env: static
+    buildCommand: npm install
+    staticPublishPath: .
