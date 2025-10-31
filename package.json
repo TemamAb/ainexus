@@ -12,10 +12,14 @@
     "monitor": "node dashboard/server.js"
   },
   "dependencies": {
+    "@metamask/detect-provider": "^2.0.0",
+    "@uniswap/sdk-core": "^7.8.0",
+    "@uniswap/v3-sdk": "^3.26.0",
+    "axios": "^1.13.1",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.15.0",
     "express": "^4.18.2",
-    "ethers": "^6.8.0",
-    "axios": "^1.5.0",
     "node-cron": "^3.0.2",
-    "dotenv": "^16.3.1"
+    "web3": "^4.16.0"
   }
 }
