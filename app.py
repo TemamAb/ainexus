@@ -15,12 +15,10 @@ trading_engine = TradingEngine()
 
 @app.route('/')
 def dashboard():
-    """Main Enterprise Dashboard"""
     return render_template('dashboard.html')
 
 @app.route('/api/live-metrics')
 def live_metrics():
-    """JSON API for live metrics"""
     return jsonify({
         "enterprise_metrics": {
             "opportunities_scanned": trading_engine.opportunities_scanned,
@@ -31,10 +29,10 @@ def live_metrics():
             "response_time_ms": 12
         },
         "blockchain_status": {
-            "ethereum": "í¿¢ CONNECTED",
-            "bsc": "í¿¢ CONNECTED", 
-            "polygon": "í¿¢ CONNECTED",
-            "arbitrum": "í¿¡ CONNECTING"
+            "ethereum": "CONNECTED",
+            "bsc": "CONNECTED",
+            "polygon": "CONNECTED",
+            "arbitrum": "CONNECTING"
         },
         "security_status": {
             "private_keys": "ZERO_STORAGE",
@@ -42,17 +40,6 @@ def live_metrics():
             "encryption": "AES-256_ENABLED"
         },
         "timestamp": datetime.utcnow().isoformat()
-    })
-
-@app.route('/api/system-health')
-def system_health():
-    """Enhanced system health endpoint"""
-    return jsonify({
-        "status": "ENTERPRISE_OPERATIONAL",
-        "version": "2.0.0",
-        "architecture": "BACKEND-ONLY_MICROSERVICES",
-        "capacity": "$100,000,000_SCALABLE",
-        "last_updated": datetime.utcnow().isoformat()
     })
 
 if __name__ == '__main__':
