@@ -1,0 +1,18 @@
+auto_transfer:
+  enabled: true
+  profit_threshold_usd: 1000.0
+  transfer_percentage: 0.5
+  frequency: "24_hours"
+  min_transfer_amount: 100.0
+
+reinvestment:
+  enabled: true
+  min_reinvestment_percent: 0.01
+  max_reinvestment_percent: 1.0
+  compound_threshold: 0.1
+
+risk_limits:
+  max_position_size_percent: 0.1
+  max_daily_loss_percent: 0.05
+  max_slippage_percent: 0.005
+  min_profit_threshold: 0.002

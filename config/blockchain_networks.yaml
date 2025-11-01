@@ -1,0 +1,28 @@
+networks:
+  ethereum:
+    mainnet:
+      rpc_url: "https://mainnet.infura.io/v3/your-project-id"
+      chain_id: 1
+      explorer: "https://etherscan.io"
+    goerli:
+      rpc_url: "https://goerli.infura.io/v3/your-project-id"
+      chain_id: 5
+      explorer: "https://goerli.etherscan.io"
+  
+  polygon:
+    mainnet:
+      rpc_url: "https://polygon-rpc.com"
+      chain_id: 137
+      explorer: "https://polygonscan.com"
+
+flash_loan_protocols:
+  aave_v3:
+    ethereum: "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2"
+    polygon: "0x794a61358D6845594F94dc1DB02A252b5b4814aD"
+  
+  balancer:
+    ethereum: "0xBA12222222228d8Ba445958a75a0704d566BF2C8"
+
+erc4337:
+  entry_point: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789"
+  paymaster: "0x0000000000000000000000000000000000000000"

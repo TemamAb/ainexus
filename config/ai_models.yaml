@@ -1,0 +1,22 @@
+reinforcement_learning:
+  learning_rate: 0.001
+  discount_factor: 0.95
+  exploration_rate: 0.1
+  batch_size: 32
+  memory_size: 10000
+
+genetic_algorithm:
+  population_size: 50
+  mutation_rate: 0.1
+  crossover_rate: 0.8
+  elite_count: 10
+
+delta_optimizer:
+  generation_interval_minutes: 15
+  candidate_count: 9
+  evaluation_period_hours: 24
+
+training:
+  epochs: 1000
+  validation_split: 0.2
+  early_stopping_patience: 50
