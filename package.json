@@ -5,6 +5,9 @@
     "start": "npx serve -s . -l 5000"
   },
   "dependencies": {
-    "serve": "^14.0.0"
+    "axios": "^1.13.1",
+    "ethers": "^6.15.0",
+    "serve": "^14.0.0",
+    "web3": "^4.16.0"
   }
 }
